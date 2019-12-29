@@ -34,7 +34,7 @@ import com.mtjin.mapogreen.R;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     // 구글로그인 result 상수
     private static final int CODE_SIGN_IN = 1000;
     // 구글api클라이언트
@@ -47,55 +47,28 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     //사용자
     private FirebaseUser mCurrentUser;
 
-    public static String getSigneture(Context context){
-        PackageManager pm = context.getPackageManager();
-        try{
-            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
-
-            for(int i = 0; i < packageInfo.signatures.length; i++){
-                Signature signature = packageInfo.signatures[i];
-                try {
-                    MessageDigest md = MessageDigest.getInstance("SHA");
-                    md.update(signature.toByteArray());
-                    return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-        }catch(PackageManager.NameNotFoundException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Log.d("ASDASD",getSigneture(this));
-
         googleButton = findViewById(R.id.login_btn_google);
         mAuth = FirebaseAuth.getInstance(); //firebaseAuth 객체의 공유 인스턴스를 가져옵니다.
-
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 mCurrentUser = firebaseAuth.getCurrentUser();
-                if(mCurrentUser != null){
+                if (mCurrentUser != null) {
                     //자동구글로그인시필요
                     /*//이 유저 로그인시
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);*/
-                }else{
+                } else {
                     //해당 로그아웃시
                 }
             }
         };
-
 
 
         //구글로그인관련 소스
@@ -145,7 +118,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
 
 
         if (requestCode == CODE_SIGN_IN) { //구글로그인버튼 누르고 응답결과

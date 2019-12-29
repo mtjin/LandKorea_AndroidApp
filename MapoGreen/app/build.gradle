@@ -18,6 +18,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'x86_64', 'armeabi-v7a', 'armeabi'
+            universalApk false
+        }
+    }
 }
 
 dependencies {
@@ -43,4 +52,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
     //ted permission
     implementation "gun0912.ted:tedpermission:2.1.0"
+    //다음맵
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs\\libDaumMapAndroid.jar')
 }
