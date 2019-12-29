@@ -4,8 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,6 +31,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.mtjin.mapogreen.R;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
     // 구글로그인 result 상수
     private static final int CODE_SIGN_IN = 1000;
@@ -38,10 +47,35 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     //사용자
     private FirebaseUser mCurrentUser;
 
+    public static String getSigneture(Context context){
+        PackageManager pm = context.getPackageManager();
+        try{
+            PackageInfo packageInfo = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
+
+            for(int i = 0; i < packageInfo.signatures.length; i++){
+                Signature signature = packageInfo.signatures[i];
+                try {
+                    MessageDigest md = MessageDigest.getInstance("SHA");
+                    md.update(signature.toByteArray());
+                    return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }catch(PackageManager.NameNotFoundException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Log.d("ASDASD",getSigneture(this));
 
         googleButton = findViewById(R.id.login_btn_google);
         mAuth = FirebaseAuth.getInstance(); //firebaseAuth 객체의 공유 인스턴스를 가져옵니다.

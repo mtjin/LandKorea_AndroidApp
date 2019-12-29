@@ -2,14 +2,20 @@ package com.mtjin.mapogreen.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.ViewGroup;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.mtjin.mapogreen.R;
+
 
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
+
+import java.util.ArrayList;
 
 
 public class MapActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener {
@@ -20,8 +26,10 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        mMapView = new MapView(this);
+        //권한요청
+        tedPermission();
 
+        mMapView = new MapView(this);
         mMapViewContainer = findViewById(R.id.map_mv_mapcontainer);
         mMapViewContainer.addView(mMapView);
 
@@ -33,6 +41,30 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mMapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
 
 
+    }
+
+    //위치 사용 권한 요청
+    private void tedPermission() {
+
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                // 권한 요청 성공
+
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                // 권한 요청 실패
+            }
+        };
+
+        TedPermission.with(this)
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage(getResources().getString(R.string.permission_2))
+                .setDeniedMessage(getResources().getString(R.string.permission_1))
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .check();
     }
 
 

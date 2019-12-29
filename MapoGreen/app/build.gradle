@@ -41,4 +41,6 @@ dependencies {
     //Retrofit and GSON
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
+    //ted permission
+    implementation "gun0912.ted:tedpermission:2.1.0"
 }
