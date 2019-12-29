@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             Toast.makeText(LoginActivity.this, "인증 실패하였습니다. 이미 가입된 이메일일수도 있습니다.", Toast.LENGTH_LONG).show();
 
                         } else { //성공했으면 다시 로그인액티비티에서 프로필액티비티로 가게해주면된다.
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            startActivity(new Intent(LoginActivity.this, MapActivity.class));
                         }
                     }
                 });

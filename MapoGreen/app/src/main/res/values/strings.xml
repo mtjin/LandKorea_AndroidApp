@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MapoGreen</string>
+    <string name="daummap_key">a2f83a1363b70f03937194928377a282</string>
 </resources>
