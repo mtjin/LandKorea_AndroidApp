@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E2E2E2"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".activities.LoginActivity"
+    >
+
+
+    <ImageView
+        android:layout_marginTop="16dp"
+        android:id="@+id/image_view_logo"
+        android:layout_width="50dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:background="@drawable/ic_logo"
+        android:scaleType="centerCrop"
+        />
+
+    <LinearLayout
+        android:layout_marginTop="16dp"
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_view_logo"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="등산관련 정보 공유앱"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#465A61"
+            app:fontFamily="cursive"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="등산가자"
+            android:textAllCaps="false"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textColor="#969EEE"
+            android:textStyle="bold"
+            android:typeface="monospace"
+            app:fontFamily="casual"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout1"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:padding="18dp"
+        >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edit_text_round_gray_background"
+            android:drawableLeft="@drawable/ic_email"
+            android:drawablePadding="16dp"
+            android:hint="example@gmail.com"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/edit_text_round_gray_background"
+            android:drawableLeft="@drawable/ic_lock"
+            android:drawablePadding="16dp"
+            android:hint="password"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:text="비밀번호 까먹었어요?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimaryDark"
+            />
+
+        <LinearLayout
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <Button
+                android:layout_width="130dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:text="로그인"
+                android:textAllCaps="false"
+                />
+
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/login_btn_google"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="30dp"
+                android:layout_width="130dp"
+                android:textAllCaps="false"
+                android:layout_height="47dp"
+                android:onClick="onClick"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:text="회원가입 가자"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorPrimary"
+        />
+
+
+</LinearLayout>

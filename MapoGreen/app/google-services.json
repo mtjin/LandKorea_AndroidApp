@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "597632740581",
+    "firebase_url": "https://mapogreen-52cfe.firebaseio.com",
+    "project_id": "mapogreen-52cfe",
+    "storage_bucket": "mapogreen-52cfe.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597632740581:android:e82079b44c5dbbc986b80c",
+        "android_client_info": {
+          "package_name": "com.mtjin.mapogreen"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "597632740581-6sbua2gc3p1c3cheipktbt763bk9ja5g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mtjin.mapogreen",
+            "certificate_hash": "2594505716124fb73c0d9ca0633d9dd80b38d943"
+          }
+        },
+        {
+          "client_id": "597632740581-5pdrsosu74v7qrsb989oq5uvdvk4mi33.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDG4TQUZN5E3k2Mrxv2P8WKIRKfs8Cr4Zk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "597632740581-5pdrsosu74v7qrsb989oq5uvdvk4mi33.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
