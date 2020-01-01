@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.mtjin.mapogreen.R;
 import com.ramotion.circlemenu.CircleMenuView;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MapActivity.class);
                 if (index == 1) {
                     startActivity(intent);
+                    FancyToast.makeText(MainActivity.this,"맵 검색",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
                 }
             }
 
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, MapActivity.class);
                 if (index == 1) {
                     startActivity(intent);
+                    FancyToast.makeText(MainActivity.this,"맵 검색",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
                 }
             }
         });
