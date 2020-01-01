@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.telecom.Call;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -11,31 +14,37 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.mtjin.mapogreen.R;
+import com.mtjin.mapogreen.api.ApiClient;
+import com.mtjin.mapogreen.api.ApiInterface;
+import com.mtjin.mapogreen.model.SearchResult;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 
+import net.daum.android.map.coord.MapCoord;
+import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 
 
 public class MapActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener {
+    final static String TAG = "MapActivityTAG";
     //xml
     MapView mMapView;
     ViewGroup mMapViewContainer;
-    EditText mSerachEdit;
+    EditText mSearchEdit;
     Button mOkButton;
     private Animation fab_open, fab_close;
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab, fab1, fab2;
+    private FloatingActionButton fab, fab1, fab2, fab3;
     RelativeLayout mLoaderLayout;
 
     @Override
@@ -44,13 +53,14 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         setContentView(R.layout.activity_map);
 
         //binding
-        mSerachEdit = findViewById(R.id.map_et_search);
+        mSearchEdit = findViewById(R.id.map_et_search);
         mOkButton = findViewById(R.id.map_btn_ok);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab = findViewById(R.id.fab);
         fab1 = findViewById(R.id.fab1);
         fab2 = findViewById(R.id.fab2);
+        fab3 = findViewById(R.id.fab3);
         mLoaderLayout = findViewById(R.id.loaderLayout);
 
         //권한요청
@@ -64,12 +74,17 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mMapView.setMapViewEventListener(this); // this에 MapView.MapViewEventListener 구현.
         mMapView.setPOIItemEventListener(this);
         mMapView.setOpenAPIKeyAuthenticationResultListener(this);
+        //버튼클릭
+        mOkButton.setOnClickListener(this);
         fab.setOnClickListener(this);
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
+        fab3.setOnClickListener(this);
 
-        mMapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
-
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633);
+        mMapView.setMapCenterPoint(mapPoint, true);
+        //서울시 마포구 공덕동
+        //MapCoord mapCoord = new MapCoord(491171, 1125184);
 
     }
 
@@ -104,7 +119,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
             case R.id.fab:
                 anim();
                 FancyToast.makeText(this, "1번 버튼: 해당 좌표 중심으로 1km 검색" +
-                        "\n2번 버튼: 1km 검색한 결과 자세히보기", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
+                        "\n2번 버튼: 현재위치 검색" +
+                        "\n3번 버튼: 1km 검색한 결과 자세히보기", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
                 break;
             case R.id.fab1:
                 mLoaderLayout.setVisibility(View.VISIBLE);
@@ -116,7 +132,26 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 anim();
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
+            case R.id.fab3:
+                mLoaderLayout.setVisibility(View.VISIBLE);
+                anim();
+                mLoaderLayout.setVisibility(View.GONE);
+                break;
+            case R.id.map_btn_ok:
+                mLoaderLayout.setVisibility(View.VISIBLE);
+                if (mSearchEdit.getText().toString().trim().length() >= 3) {
+                    requestSearchLocal(mSearchEdit.getText().toString().trim());
+                } else {
+                    FancyToast.makeText(this, "세글자 이상 입력해주세요", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
+                }
+                mLoaderLayout.setVisibility(View.GONE);
+                break;
         }
+    }
+
+    private void requestSearchLocal(String searchName) {
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        // Call<SearchResult> call =apiInterface.getResearchLocal(searchName);
     }
 
     public void anim() {
@@ -124,14 +159,18 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         if (isFabOpen) {
             fab1.startAnimation(fab_close);
             fab2.startAnimation(fab_close);
+            fab3.startAnimation(fab_close);
             fab1.setClickable(false);
             fab2.setClickable(false);
+            fab3.setClickable(false);
             isFabOpen = false;
         } else {
             fab1.startAnimation(fab_open);
             fab2.startAnimation(fab_open);
+            fab3.startAnimation(fab_open);
             fab1.setClickable(true);
             fab2.setClickable(true);
+            fab3.setClickable(true);
             isFabOpen = true;
         }
     }
@@ -139,17 +178,27 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Override
     public void onMapViewInitialized(MapView mapView) {
-
+        float x = mapView.getX();
+        float y = mapView.getY();
+        Log.d(TAG, "X=> " + x);
+        Log.d(TAG, "Y=> " + y);
     }
 
     @Override
     public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
-
+        float x = mapView.getX();
+        float y = mapView.getY();
+        Log.d(TAG, "X=> " + x);
+        Log.d(TAG, "Y=> " + y);
     }
 
     @Override
     public void onMapViewZoomLevelChanged(MapView mapView, int i) {
+        float x = mapView.getX();
 
+        float y = mapView.getY();
+        Log.d(TAG, "X=> " + mapView.getMapCenterPoint().getMapPointGeoCoord().latitude);
+        Log.d(TAG, "Y=> " + mapView.getMapCenterPoint().getMapPointGeoCoord().longitude);
     }
 
     @Override
