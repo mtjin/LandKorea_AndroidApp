@@ -42,6 +42,10 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     private FloatingActionButton fab, fab1, fab2, fab3;
     RelativeLayout mLoaderLayout;
 
+    //value
+    private double mCurrentLat;
+    private double mCurrentLng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,13 +77,13 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         fab2.setOnClickListener(this);
         fab3.setOnClickListener(this);
 
-        //기본위치
+        /*//기본위치
         MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633);
-        mMapView.setMapCenterPoint(mapPoint, true);
+        mMapView.setMapCenterPoint(mapPoint, true);*/
 
         //현재위치 업데이트
         mMapView.setCurrentLocationEventListener(this);
-        //setCurrentLocationTrackingMode
+        //setCurrentLocationTrackingMode (지도랑 현재위치 좌표 찍어주고 따라다닌다.)
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
 
     }
@@ -104,6 +108,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
             case R.id.fab2:
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
+                //setCurrentLocationTrackingMode
+                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab3:
@@ -152,27 +158,16 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Override
     public void onMapViewInitialized(MapView mapView) {
-        float x = mapView.getX();
-        float y = mapView.getY();
-        Log.d(TAG, "X=> " + x);
-        Log.d(TAG, "Y=> " + y);
     }
 
     @Override
     public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
-        float x = mapView.getX();
-        float y = mapView.getY();
-        Log.d(TAG, "X=> " + x);
-        Log.d(TAG, "Y=> " + y);
     }
 
     @Override
     public void onMapViewZoomLevelChanged(MapView mapView, int i) {
-        float x = mapView.getX();
-
-        float y = mapView.getY();
-        Log.d(TAG, "X=> " + mapView.getMapCenterPoint().getMapPointGeoCoord().latitude);
-        Log.d(TAG, "Y=> " + mapView.getMapCenterPoint().getMapPointGeoCoord().longitude);
+      /*  Log.d(TAG, "X=> " + mapView.getMapCenterPoint().getMapPointGeoCoord().latitude);
+        Log.d(TAG, "Y=> " + mapView.getMapCenterPoint().getMapPointGeoCoord().longitude);*/
     }
 
     @Override
@@ -239,8 +234,11 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
         MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
         //이 좌표로 지도 중심 이동
-        //mMapView.setMapCenterPoint(currentMapPoint, true);
-        //처음만 현재위치로 이동하게하게 조작
+        mMapView.setMapCenterPoint(currentMapPoint, true);
+        //전역변수로 현재 좌표 저장
+        mCurrentLat = mapPointGeo.latitude;
+        mCurrentLng = mapPointGeo.longitude;
+        //트래킹 모드 off (한번만 트래킹 모드로 현재위치 찾아주게 조작했다.)
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
     }
 
@@ -251,11 +249,20 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Override
     public void onCurrentLocationUpdateFailed(MapView mapView) {
-
+        Log.i(TAG, "onCurrentLocationUpdateFailed");
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
     }
 
     @Override
     public void onCurrentLocationUpdateCancelled(MapView mapView) {
+        Log.i(TAG, "onCurrentLocationUpdateCancelled");
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+        mMapView.setShowCurrentLocationMarker(false);
     }
 }

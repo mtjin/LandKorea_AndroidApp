@@ -3,6 +3,7 @@ package com.mtjin.mapogreen.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,17 +22,18 @@ public class MapNavigationActivity extends AppCompatActivity implements MapView.
     EditText mSearchEdit;
     Button mOkButton;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_navigation);
 
         //binding
-        mSearchEdit = findViewById(R.id.map_et_search);
-        mOkButton = findViewById(R.id.map_btn_ok);
+        mSearchEdit = findViewById(R.id.navi_et_search);
+        mOkButton = findViewById(R.id.navi_btn_ok);
 
         mMapView = new MapView(this);
-        mMapViewContainer = findViewById(R.id.map_mv_mapcontainer);
+        mMapViewContainer = findViewById(R.id.navi_mv_mapcontainer);
         mMapViewContainer.addView(mMapView);
 
         //리스너 세팅
@@ -54,17 +56,20 @@ public class MapNavigationActivity extends AppCompatActivity implements MapView.
 
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float v) {
-
+        MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
+        MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+        //이 좌표로 지도 중심 이동
+        mMapView.setMapCenterPoint(currentMapPoint, true);
     }
 
     @Override
     public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
-
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
     }
 
     @Override
     public void onCurrentLocationUpdateFailed(MapView mapView) {
-
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
     }
 
     @Override
@@ -140,5 +145,12 @@ public class MapNavigationActivity extends AppCompatActivity implements MapView.
     @Override
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+        mMapView.setShowCurrentLocationMarker(false);
     }
 }
