@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".activities.MapActivity"
     >
-
 
         <RelativeLayout
             android:id="@+id/map_mv_mapcontainer"
@@ -14,4 +14,6 @@
             android:layout_height="match_parent"
             />
 
-</RelativeLayout>
+
+
+</LinearLayout>

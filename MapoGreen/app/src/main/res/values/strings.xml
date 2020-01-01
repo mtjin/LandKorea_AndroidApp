@@ -4,4 +4,19 @@
     <!-- Ted Permission -->
     <string name="permission_1">[설정] > [권한] 에서 권한을 허용할 수 있습니다.</string>
     <string name="permission_2">맵사용을 위해 위치정보 이용 권한이 필요합니다.</string>
+
+    <array name="icons">
+        <item>@drawable/ic_app_logo</item>
+        <item>@drawable/ic_place_black_24dp</item>
+        <item>@drawable/ic_app_logo</item>
+        <item>@drawable/ic_app_logo</item>
+        <item>@drawable/ic_app_logo</item>
+    </array>
+    <array name="colors">
+        <item>@android:color/holo_blue_light</item>
+        <item>@android:color/holo_green_dark</item>
+        <item>@android:color/holo_red_light</item>
+        <item>@android:color/holo_purple</item>
+        <item>@android:color/holo_orange_light</item>
+    </array>
 </resources>

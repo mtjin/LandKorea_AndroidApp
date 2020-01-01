@@ -55,4 +55,8 @@ dependencies {
     //다음맵
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation files('libs\\libDaumMapAndroid.jar')
+
+    //Circle Menu
+    implementation 'com.ramotion.circlemenu:circle-menu:0.3.2'
+
 }
