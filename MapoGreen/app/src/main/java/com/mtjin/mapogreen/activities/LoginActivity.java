@@ -160,7 +160,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .setPermissionListener(permissionListener)
                 .setRationaleMessage(getResources().getString(R.string.permission_2))
                 .setDeniedMessage(getResources().getString(R.string.permission_1))
-                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.LOCATION_HARDWARE)
+                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
                 .check();
     }
 

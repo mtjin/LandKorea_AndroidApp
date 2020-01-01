@@ -6,7 +6,7 @@
     <string name="permission_2">맵사용을 위해 위치정보 이용 권한이 필요합니다.</string>
 
     <array name="icons">
-        <item>@drawable/ic_app_logo</item>
+        <item>@drawable/ic_location_searching_black_24dp</item>
         <item>@drawable/ic_place_black_24dp</item>
         <item>@drawable/ic_app_logo</item>
         <item>@drawable/ic_app_logo</item>

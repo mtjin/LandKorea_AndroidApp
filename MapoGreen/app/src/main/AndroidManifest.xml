@@ -22,7 +22,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.MapActivity"/>
+        <activity android:name=".activities.MapNavigationActivity"></activity>
+        <activity android:name=".activities.MapActivity" />
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,6 +32,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MainActivity" />
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/daummap_key" />

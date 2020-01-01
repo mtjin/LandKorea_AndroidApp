@@ -49,8 +49,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onButtonClickAnimationEnd(@NotNull CircleMenuView view, int index) {
                 Log.d(TAG, "onButtonClickAnimationEnd index => " +   index);
-                Intent intent = new Intent(MainActivity.this, MapActivity.class);
-                if (index == 1) {
+                if(index == 0){
+                    Intent intent = new Intent(MainActivity.this, MapNavigationActivity.class);
+                    startActivity(intent);
+                    FancyToast.makeText(MainActivity.this,"네비게이션",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
+                }
+                else if (index == 1) {
+                    Intent intent = new Intent(MainActivity.this, MapActivity.class);
                     startActivity(intent);
                     FancyToast.makeText(MainActivity.this,"맵 검색",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
                 }

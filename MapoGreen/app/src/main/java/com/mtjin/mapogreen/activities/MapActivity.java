@@ -73,15 +73,14 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         fab2.setOnClickListener(this);
         fab3.setOnClickListener(this);
 
+        //기본위치
         MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633);
         mMapView.setMapCenterPoint(mapPoint, true);
-        //서울시 마포구 공덕동
-        //MapCoord mapCoord = new MapCoord(491171, 1125184);
 
         //현재위치 업데이트
         mMapView.setCurrentLocationEventListener(this);
         //setCurrentLocationTrackingMode
-        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
 
     }
 
@@ -239,7 +238,10 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
         MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
-        mMapView.setMapCenterPoint(currentMapPoint, true);
+        //이 좌표로 지도 중심 이동
+        //mMapView.setMapCenterPoint(currentMapPoint, true);
+        //처음만 현재위치로 이동하게하게 조작
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
     }
 
     @Override
