@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.os.Bundle;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -19,12 +21,18 @@ import java.util.ArrayList;
 
 
 public class MapActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener {
+    //xml
     MapView mMapView;
     ViewGroup mMapViewContainer;
+    EditText mSerachEdit;
+    Button mOkButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+        mSerachEdit = findViewById(R.id.map_et_search);
+        mOkButton = findViewById(R.id.map_btn_ok);
 
         //권한요청
         tedPermission();

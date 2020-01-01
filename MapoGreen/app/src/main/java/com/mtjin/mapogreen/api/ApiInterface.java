@@ -1,8 +1,7 @@
 package com.mtjin.mapogreen.api;
 
-import com.mtjin.mapogreen.model.ResearchResult;
+import com.mtjin.mapogreen.model.SearchResult;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -10,7 +9,7 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
     @GET("coord2regioncode.json?")
-    Call<ResearchResult> getResearchLocal(
+    Call<SearchResult> getResearchLocal(
             @Header("Authorization") String token,
             @Query("query") String query,
             @Query("category_group_code") String category_group_code,
