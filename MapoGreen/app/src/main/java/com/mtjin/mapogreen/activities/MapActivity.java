@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.os.Bundle;
-import android.telecom.Call;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.gun0912.tedpermission.PermissionListener;
@@ -21,21 +20,17 @@ import com.gun0912.tedpermission.TedPermission;
 import com.mtjin.mapogreen.R;
 import com.mtjin.mapogreen.api.ApiClient;
 import com.mtjin.mapogreen.api.ApiInterface;
-import com.mtjin.mapogreen.model.SearchResult;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 
-import net.daum.android.map.coord.MapCoord;
-import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapReverseGeoCoder;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 
 
-public class MapActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener {
+public class MapActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener, MapView.CurrentLocationEventListener {
     final static String TAG = "MapActivityTAG";
     //xml
     MapView mMapView;
@@ -63,9 +58,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         fab3 = findViewById(R.id.fab3);
         mLoaderLayout = findViewById(R.id.loaderLayout);
 
-        //권한요청
-        tedPermission();
-
         mMapView = new MapView(this);
         mMapViewContainer = findViewById(R.id.map_mv_mapcontainer);
         mMapViewContainer.addView(mMapView);
@@ -86,31 +78,14 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         //서울시 마포구 공덕동
         //MapCoord mapCoord = new MapCoord(491171, 1125184);
 
+        //현재위치 업데이트
+        mMapView.setCurrentLocationEventListener(this);
+        //setCurrentLocationTrackingMode
+        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+
     }
 
-    //위치 사용 권한 요청
-    private void tedPermission() {
 
-        PermissionListener permissionListener = new PermissionListener() {
-            @Override
-            public void onPermissionGranted() {
-                // 권한 요청 성공
-
-            }
-
-            @Override
-            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-                // 권한 요청 실패
-            }
-        };
-
-        TedPermission.with(this)
-                .setPermissionListener(permissionListener)
-                .setRationaleMessage(getResources().getString(R.string.permission_2))
-                .setDeniedMessage(getResources().getString(R.string.permission_1))
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
-                .check();
-    }
 
     @Override
     public void onClick(View v) {
@@ -253,6 +228,32 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Override
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+
+    }
+
+    /*
+    *  현재 위치 업데이트(setCurrentLocationEventListener)
+    */
+    @Override
+    public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
+        MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
+        Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
+        MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+        mMapView.setMapCenterPoint(currentMapPoint, true);
+    }
+
+    @Override
+    public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
+
+    }
+
+    @Override
+    public void onCurrentLocationUpdateFailed(MapView mapView) {
+
+    }
+
+    @Override
+    public void onCurrentLocationUpdateCancelled(MapView mapView) {
 
     }
 }

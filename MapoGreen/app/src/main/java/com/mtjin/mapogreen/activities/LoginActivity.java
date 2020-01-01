@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -29,10 +30,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.mtjin.mapogreen.R;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     // 구글로그인 result 상수
@@ -51,6 +55,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //권한요청
+        tedPermission();
+
 
         googleButton = findViewById(R.id.login_btn_google);
         mAuth = FirebaseAuth.getInstance(); //firebaseAuth 객체의 공유 인스턴스를 가져옵니다.
@@ -129,6 +137,31 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 Toast.makeText(this, "구글 로그인을 실패하였습니다", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    //위치 사용 권한 요청
+    private void tedPermission() {
+
+        PermissionListener permissionListener = new PermissionListener() {
+            @Override
+            public void onPermissionGranted() {
+                // 권한 요청 성공
+                Toast.makeText(LoginActivity.this, "권한 성공", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+                // 권한 요청 실패
+                Toast.makeText(LoginActivity.this, "권한 실패", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        TedPermission.with(this)
+                .setPermissionListener(permissionListener)
+                .setRationaleMessage(getResources().getString(R.string.permission_2))
+                .setDeniedMessage(getResources().getString(R.string.permission_1))
+                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.LOCATION_HARDWARE)
+                .check();
     }
 
     @Override //When initializing your Activity, check to see if the user is currently signed in.
