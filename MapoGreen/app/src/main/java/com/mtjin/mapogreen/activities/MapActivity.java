@@ -2,6 +2,7 @@ package com.mtjin.mapogreen.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.mtjin.mapogreen.model.category_search.CategoryResult;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 
+import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
@@ -28,7 +30,6 @@ import net.daum.mf.map.api.MapView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,8 +49,9 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     RelativeLayout mLoaderLayout;
 
     //value
-    private double mCurrentLat;
+    MapPoint currentMapPoint;
     private double mCurrentLng;
+    private double mCurrentLat;
     boolean isSearch;
 
     @Override
@@ -141,7 +143,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     }
 
     private void requestSearchLocal() {
-        List<Document> bigMartList = new ArrayList<>(); //대형마트 MT1
+        ArrayList<Document> bigMartList = new ArrayList<>(); //대형마트 MT1
         ArrayList<Document> gs24List = new ArrayList<>(); //편의점 CS2
         ArrayList<Document> schoolList = new ArrayList<>(); //학교 SC4
         ArrayList<Document> academyList = new ArrayList<>(); //학원 AC5
@@ -150,7 +152,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         ArrayList<Document> hospitalList = new ArrayList<>(); //병원 HP8
         ArrayList<Document> pharmacyList = new ArrayList<>(); //약국 PM9
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<CategoryResult> call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "MT1", mCurrentLat + "", mCurrentLng + "", 1000);
+        Call<CategoryResult> call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "MT1", mCurrentLng + "", mCurrentLat + "", 1000);
         call.enqueue(new Callback<CategoryResult>() {
             @Override
             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -159,7 +161,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                         Log.d(TAG, "bigMartList Success");
                         bigMartList.addAll(response.body().getDocuments());
                     }
-                    call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "CS2", mCurrentLat + "", mCurrentLng + "", 1000);
+                    call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "CS2", mCurrentLng + "", mCurrentLat + "", 1000);
                     call.enqueue(new Callback<CategoryResult>() {
                         @Override
                         public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -167,7 +169,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                 assert response.body() != null;
                                 Log.d(TAG, "gs24List Success");
                                 gs24List.addAll(response.body().getDocuments());
-                                call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "SC4", mCurrentLat + "", mCurrentLng + "", 1000);
+                                call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "SC4", mCurrentLng + "", mCurrentLat + "", 1000);
                                 call.enqueue(new Callback<CategoryResult>() {
                                     @Override
                                     public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -175,7 +177,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                             assert response.body() != null;
                                             Log.d(TAG, "schoolList Success");
                                             schoolList.addAll(response.body().getDocuments());
-                                            call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "AC5", mCurrentLat + "", mCurrentLng + "", 1000);
+                                            call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "AC5", mCurrentLng + "", mCurrentLat + "", 1000);
                                             call.enqueue(new Callback<CategoryResult>() {
                                                 @Override
                                                 public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -183,7 +185,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                         assert response.body() != null;
                                                         Log.d(TAG, "academyList Success");
                                                         academyList.addAll(response.body().getDocuments());
-                                                        call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "SW8", mCurrentLat + "", mCurrentLng + "", 1000);
+                                                        call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "SW8", mCurrentLng + "", mCurrentLat + "", 1000);
                                                         call.enqueue(new Callback<CategoryResult>() {
                                                             @Override
                                                             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -191,7 +193,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                     assert response.body() != null;
                                                                     Log.d(TAG, "subwayList Success");
                                                                     subwayList.addAll(response.body().getDocuments());
-                                                                    call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "BK9", mCurrentLat + "", mCurrentLng + "", 1000);
+                                                                    call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "BK9", mCurrentLng + "", mCurrentLat + "", 1000);
                                                                     call.enqueue(new Callback<CategoryResult>() {
                                                                         @Override
                                                                         public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -199,7 +201,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                 assert response.body() != null;
                                                                                 Log.d(TAG, "bankList Success");
                                                                                 bankList.addAll(response.body().getDocuments());
-                                                                                call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "HP8", mCurrentLat + "", mCurrentLng + "", 1000);
+                                                                                call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "HP8", mCurrentLng + "", mCurrentLat + "", 1000);
                                                                                 call.enqueue(new Callback<CategoryResult>() {
                                                                                     @Override
                                                                                     public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -207,7 +209,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                             assert response.body() != null;
                                                                                             Log.d(TAG, "hospitalList Success");
                                                                                             hospitalList.addAll(response.body().getDocuments());
-                                                                                            call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "PM9", mCurrentLat + "", mCurrentLng + "", 1000);
+                                                                                            call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "PM9", mCurrentLng + "", mCurrentLat + "", 1000);
                                                                                             call.enqueue(new Callback<CategoryResult>() {
                                                                                                 @Override
                                                                                                 public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -215,6 +217,127 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                         assert response.body() != null;
                                                                                                         Log.d(TAG, "pharmacyList Success");
                                                                                                         pharmacyList.addAll(response.body().getDocuments());
+                                                                                                        //모두 통신 성공 시 circle 생성
+                                                                                                        MapCircle circle1 = new MapCircle(
+                                                                                                                MapPoint.mapPointWithGeoCoord(mCurrentLat, mCurrentLng), // center
+                                                                                                                1000, // radius
+                                                                                                                Color.argb(128, 255, 0, 0), // strokeColor
+                                                                                                                Color.argb(128, 0, 255, 0) // fillColor
+                                                                                                        );
+                                                                                                        circle1.setTag(1234);
+                                                                                                        mMapView.addCircle(circle1);
+                                                                                                        Log.d("SIZE1" , bigMartList.size()+"");
+                                                                                                        Log.d("SIZE2" , gs24List.size()+"");
+                                                                                                        Log.d("SIZE3" , schoolList.size()+"");
+                                                                                                        Log.d("SIZE4" , academyList.size()+"");
+                                                                                                        Log.d("SIZE5" , subwayList.size()+"");
+                                                                                                        Log.d("SIZE6" , bankList.size()+"");
+                                                                                                        //마커 생성
+                                                                                                        int tagNum = 10;
+                                                                                                        for(Document document : bigMartList){
+                                                                                                            MapPOIItem marker = new MapPOIItem();
+                                                                                                            marker.setItemName("대형마트");
+                                                                                                            marker.setTag(tagNum++);
+                                                                                                            double x = Double.parseDouble(document.getY());
+                                                                                                            double y = Double.parseDouble(document.getX());
+                                                                                                            //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                                                                                            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                                                                                            marker.setMapPoint(mapPoint);
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            mMapView.addPOIItem(marker);
+                                                                                                        }
+                                                                                                        for(Document document : gs24List){
+                                                                                                            MapPOIItem marker = new MapPOIItem();
+                                                                                                            marker.setItemName("편의점");
+                                                                                                            marker.setTag(tagNum++);
+                                                                                                            double x = Double.parseDouble(document.getY());
+                                                                                                            double y = Double.parseDouble(document.getX());
+                                                                                                            //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                                                                                            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                                                                                            marker.setMapPoint(mapPoint);
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            mMapView.addPOIItem(marker);
+                                                                                                        }
+                                                                                                        for(Document document : schoolList){
+                                                                                                            MapPOIItem marker = new MapPOIItem();
+                                                                                                            marker.setItemName("학교");
+                                                                                                            marker.setTag(tagNum++);
+                                                                                                            double x = Double.parseDouble(document.getY());
+                                                                                                            double y = Double.parseDouble(document.getX());
+                                                                                                            //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                                                                                            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                                                                                            marker.setMapPoint(mapPoint);
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            mMapView.addPOIItem(marker);
+                                                                                                        }
+                                                                                                        for(Document document : academyList){
+                                                                                                            MapPOIItem marker = new MapPOIItem();
+                                                                                                            marker.setItemName("학원");
+                                                                                                            marker.setTag(tagNum++);
+                                                                                                            double x = Double.parseDouble(document.getY());
+                                                                                                            double y = Double.parseDouble(document.getX());
+                                                                                                            //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                                                                                            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                                                                                            marker.setMapPoint(mapPoint);
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            mMapView.addPOIItem(marker);
+                                                                                                        }
+                                                                                                        for(Document document : subwayList){
+                                                                                                            MapPOIItem marker = new MapPOIItem();
+                                                                                                            marker.setItemName("지하철");
+                                                                                                            marker.setTag(tagNum++);
+                                                                                                            double x = Double.parseDouble(document.getY());
+                                                                                                            double y = Double.parseDouble(document.getX());
+                                                                                                            //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                                                                                            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                                                                                            marker.setMapPoint(mapPoint);
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            mMapView.addPOIItem(marker);
+                                                                                                        }
+                                                                                                        for(Document document : bankList){
+                                                                                                            MapPOIItem marker = new MapPOIItem();
+                                                                                                            marker.setItemName("은행");
+                                                                                                            marker.setTag(tagNum++);
+                                                                                                            double x = Double.parseDouble(document.getY());
+                                                                                                            double y = Double.parseDouble(document.getX());
+                                                                                                            //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                                                                                            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                                                                                            marker.setMapPoint(mapPoint);
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            mMapView.addPOIItem(marker);
+                                                                                                        }
+                                                                                                        for(Document document : hospitalList){
+                                                                                                            MapPOIItem marker = new MapPOIItem();
+                                                                                                            marker.setItemName("병원");
+                                                                                                            marker.setTag(tagNum++);
+                                                                                                            double x = Double.parseDouble(document.getY());
+                                                                                                            double y = Double.parseDouble(document.getX());
+                                                                                                            //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                                                                                            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                                                                                            marker.setMapPoint(mapPoint);
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            mMapView.addPOIItem(marker);
+                                                                                                        }
+                                                                                                        for(Document document : pharmacyList){
+                                                                                                            MapPOIItem marker = new MapPOIItem();
+                                                                                                            marker.setItemName("약국");
+                                                                                                            marker.setTag(tagNum++);
+                                                                                                            double x = Double.parseDouble(document.getY());
+                                                                                                            double y = Double.parseDouble(document.getX());
+                                                                                                            //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
+                                                                                                            MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
+                                                                                                            marker.setMapPoint(mapPoint);
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
+                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            mMapView.addPOIItem(marker);
+                                                                                                        }
                                                                                                     }
                                                                                                 }
 
@@ -379,12 +502,13 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
-        MapPoint currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+         currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
         //이 좌표로 지도 중심 이동
         mMapView.setMapCenterPoint(currentMapPoint, true);
         //전역변수로 현재 좌표 저장
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
+        Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
         //현재위치 찾기 버튼을 누른 경우는 검색
         if (isSearch) {
             requestSearchLocal("병원");
