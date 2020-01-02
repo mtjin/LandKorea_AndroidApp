@@ -13,13 +13,13 @@
 
 
     <ImageView
-        android:layout_marginTop="16dp"
         android:id="@+id/image_view_logo"
-        android:layout_width="70dp"
+        android:layout_width="64dp"
         android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:background="@drawable/ic_logo"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/ic_app_logo"
         android:scaleType="centerCrop"
         />
 
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="We Can Walk to go there"
+            android:text="We can know everything within 1km"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/colorWhite"
             app:fontFamily="cursive"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="마포 1km"
+            android:text="마포구 명당"
             android:textAllCaps="false"
             android:textAppearance="@style/TextAppearance.AppCompat.Display2"
             android:textColor="@color/colorWhite"
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="12dp"
-            android:text="비밀번호 까먹었어요?"
+            android:text="비밀번호 까먹으셨나요"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorWhite"
             />
@@ -117,6 +117,8 @@
                 />
 
             <com.google.android.gms.common.SignInButton
+                android:layout_marginTop="2dp"
+                android:paddingTop="2dp"
                 android:id="@+id/login_btn_google"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="30dp"
@@ -136,7 +138,7 @@
         android:layout_below="@id/linearLayout2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
-        android:text="회원가입 가자"
+        android:text="회원가입"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/colorWhite"
