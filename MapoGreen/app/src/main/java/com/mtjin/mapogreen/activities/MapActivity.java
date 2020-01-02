@@ -16,7 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mtjin.mapogreen.R;
 import com.mtjin.mapogreen.api.ApiClient;
 import com.mtjin.mapogreen.api.ApiInterface;
-import com.mtjin.mapogreen.model.SearchResult;
+import com.mtjin.mapogreen.model.Document;
 import com.mtjin.mapogreen.model.category_search.CategoryResult;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
@@ -25,7 +25,10 @@ import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -92,7 +95,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     }
 
 
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -132,29 +134,151 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 break;
         }
     }
+
     private void requestSearchLocal(String searchName) {
        /* ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<SearchResult> call =apiInterface.getResearchLocal(searchName);*/
     }
 
     private void requestSearchLocal() {
-       /* ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<SearchResult> call =apiInterface.getResearchLocal(searchName);*/
-       ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-       Call<CategoryResult> call = apiInterface.getResearchCategory("마트", "MT1", mCurrentLat+"", mCurrentLng+"", 1000);
-       call.enqueue(new Callback<CategoryResult>() {
-           @Override
-           public void onResponse(Call<CategoryResult> call, Response<CategoryResult> response) {
-               if (response.isSuccessful() && response.body() != null) {
-                   Log.d(TAG, "받은데이터 => " + response.body());
-               }
-           }
+        List<Document> bigMartList = new ArrayList<>(); //대형마트 MT1
+        ArrayList<Document> gs24List = new ArrayList<>(); //편의점 CS2
+        ArrayList<Document> schoolList = new ArrayList<>(); //학교 SC4
+        ArrayList<Document> academyList = new ArrayList<>(); //학원 AC5
+        ArrayList<Document> subwayList = new ArrayList<>(); //지하철 SW8
+        ArrayList<Document> bankList = new ArrayList<>(); //은행 BK9
+        ArrayList<Document> hospitalList = new ArrayList<>(); //병원 HP8
+        ArrayList<Document> pharmacyList = new ArrayList<>(); //약국 PM9
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<CategoryResult> call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "MT1", mCurrentLat + "", mCurrentLng + "", 1000);
+        call.enqueue(new Callback<CategoryResult>() {
+            @Override
+            public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getDocuments() != null) {
+                        Log.d(TAG, "bigMartList Success");
+                        bigMartList.addAll(response.body().getDocuments());
+                    }
+                    call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "CS2", mCurrentLat + "", mCurrentLng + "", 1000);
+                    call.enqueue(new Callback<CategoryResult>() {
+                        @Override
+                        public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                            if(response.isSuccessful()){
+                                assert response.body() != null;
+                                Log.d(TAG, "gs24List Success");
+                                gs24List.addAll(response.body().getDocuments());
+                                call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "SC4", mCurrentLat + "", mCurrentLng + "", 1000);
+                                call.enqueue(new Callback<CategoryResult>() {
+                                    @Override
+                                    public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                                        if(response.isSuccessful()){
+                                            assert response.body() != null;
+                                            Log.d(TAG, "schoolList Success");
+                                            schoolList.addAll(response.body().getDocuments());
+                                            call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "AC5", mCurrentLat + "", mCurrentLng + "", 1000);
+                                            call.enqueue(new Callback<CategoryResult>() {
+                                                @Override
+                                                public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                                                    if(response.isSuccessful()) {
+                                                        assert response.body() != null;
+                                                        Log.d(TAG, "academyList Success");
+                                                        academyList.addAll(response.body().getDocuments());
+                                                        call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "SW8", mCurrentLat + "", mCurrentLng + "", 1000);
+                                                        call.enqueue(new Callback<CategoryResult>() {
+                                                            @Override
+                                                            public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                                                                if(response.isSuccessful()){
+                                                                    assert response.body() != null;
+                                                                    Log.d(TAG, "subwayList Success");
+                                                                    subwayList.addAll(response.body().getDocuments());
+                                                                    call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "BK9", mCurrentLat + "", mCurrentLng + "", 1000);
+                                                                    call.enqueue(new Callback<CategoryResult>() {
+                                                                        @Override
+                                                                        public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                                                                            if(response.isSuccessful()){
+                                                                                assert response.body() != null;
+                                                                                Log.d(TAG, "bankList Success");
+                                                                                bankList.addAll(response.body().getDocuments());
+                                                                                call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "HP8", mCurrentLat + "", mCurrentLng + "", 1000);
+                                                                                call.enqueue(new Callback<CategoryResult>() {
+                                                                                    @Override
+                                                                                    public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                                                                                        if(response.isSuccessful()){
+                                                                                            assert response.body() != null;
+                                                                                            Log.d(TAG, "hospitalList Success");
+                                                                                            hospitalList.addAll(response.body().getDocuments());
+                                                                                            call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "PM9", mCurrentLat + "", mCurrentLng + "", 1000);
+                                                                                            call.enqueue(new Callback<CategoryResult>() {
+                                                                                                @Override
+                                                                                                public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                                                                                                    if(response.isSuccessful()){
+                                                                                                        assert response.body() != null;
+                                                                                                        Log.d(TAG, "pharmacyList Success");
+                                                                                                        pharmacyList.addAll(response.body().getDocuments());
+                                                                                                    }
+                                                                                                }
 
-           @Override
-           public void onFailure(Call<CategoryResult> call, Throwable t) {
+                                                                                                @Override
+                                                                                                public void onFailure(@NotNull Call<CategoryResult> call, Throwable t) {
 
-           }
-       });
+                                                                                                }
+                                                                                            });
+                                                                                        }
+                                                                                    }
+
+                                                                                    @Override
+                                                                                    public void onFailure(Call<CategoryResult> call, Throwable t) {
+
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onFailure(Call<CategoryResult> call, Throwable t) {
+
+                                                                        }
+                                                                    });
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onFailure(Call<CategoryResult> call, Throwable t) {
+
+                                                            }
+                                                        });
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(Call<CategoryResult> call, Throwable t) {
+
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<CategoryResult> call, Throwable t) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CategoryResult> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CategoryResult> call, Throwable t) {
+                Log.d(TAG, "FAIL");
+            }
+        });
     }
 
     public void anim() {
@@ -249,8 +373,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     }
 
     /*
-    *  현재 위치 업데이트(setCurrentLocationEventListener)
-    */
+     *  현재 위치 업데이트(setCurrentLocationEventListener)
+     */
     @Override
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
@@ -262,7 +386,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
         //현재위치 찾기 버튼을 누른 경우는 검색
-        if(isSearch){
+        if (isSearch) {
             requestSearchLocal("병원");
 
         }
