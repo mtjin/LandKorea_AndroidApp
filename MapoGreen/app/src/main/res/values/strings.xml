@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">MapoGreen</string>
     <string name="daummap_key">a2f83a1363b70f03937194928377a282</string>
+    <string name="restapi_key"> 58c07a0f5f77a72f1866e4c4bdb6b38a</string>
     <!-- Ted Permission -->
     <string name="permission_1">[설정] > [권한] 에서 권한을 허용할 수 있습니다.</string>
     <string name="permission_2">맵사용을 위해 위치정보 이용 권한이 필요합니다.</string>

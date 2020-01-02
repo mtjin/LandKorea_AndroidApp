@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "https://dapi.kakao.com/v2/local/geo/";
+    private static final String BASE_URL = "https://dapi.kakao.com/";
     private static Retrofit retrofit;
 
     public static Retrofit getApiClient(){

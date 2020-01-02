@@ -2,7 +2,6 @@ package com.mtjin.mapogreen.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,14 +11,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 import com.mtjin.mapogreen.R;
 import com.mtjin.mapogreen.api.ApiClient;
 import com.mtjin.mapogreen.api.ApiInterface;
+import com.mtjin.mapogreen.model.SearchResult;
+import com.mtjin.mapogreen.model.category_search.CategoryResult;
 import com.shashank.sony.fancytoastlib.FancyToast;
 
 
@@ -28,6 +26,10 @@ import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MapActivity extends AppCompatActivity implements MapView.MapViewEventListener, MapView.POIItemEventListener, MapView.OpenAPIKeyAuthenticationResultListener, View.OnClickListener, MapView.CurrentLocationEventListener {
@@ -45,6 +47,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     //value
     private double mCurrentLat;
     private double mCurrentLng;
+    boolean isSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +111,10 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
             case R.id.fab2:
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
-                //setCurrentLocationTrackingMode
+                //현재위치업데이트
+                isSearch = true;
+                requestSearchLocal();
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
-                mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab3:
                 mLoaderLayout.setVisibility(View.VISIBLE);
@@ -128,10 +132,29 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 break;
         }
     }
-
     private void requestSearchLocal(String searchName) {
-        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        // Call<SearchResult> call =apiInterface.getResearchLocal(searchName);
+       /* ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<SearchResult> call =apiInterface.getResearchLocal(searchName);*/
+    }
+
+    private void requestSearchLocal() {
+       /* ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        Call<SearchResult> call =apiInterface.getResearchLocal(searchName);*/
+       ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+       Call<CategoryResult> call = apiInterface.getResearchCategory("마트", "MT1", mCurrentLat+"", mCurrentLng+"", 1000);
+       call.enqueue(new Callback<CategoryResult>() {
+           @Override
+           public void onResponse(Call<CategoryResult> call, Response<CategoryResult> response) {
+               if (response.isSuccessful() && response.body() != null) {
+                   Log.d(TAG, "받은데이터 => " + response.body());
+               }
+           }
+
+           @Override
+           public void onFailure(Call<CategoryResult> call, Throwable t) {
+
+           }
+       });
     }
 
     public void anim() {
@@ -238,8 +261,15 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         //전역변수로 현재 좌표 저장
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
+        //현재위치 찾기 버튼을 누른 경우는 검색
+        if(isSearch){
+            requestSearchLocal("병원");
+
+        }
         //트래킹 모드 off (한번만 트래킹 모드로 현재위치 찾아주게 조작했다.)
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+        isSearch = false;
+        mLoaderLayout.setVisibility(View.GONE);
     }
 
     @Override
