@@ -50,7 +50,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     //value
     MapPoint currentMapPoint;
-    private double mCurrentLng;
+    private double mCurrentLng; //Long = X, Lat = Yㅌ
     private double mCurrentLat;
     boolean isSearch;
 
