@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mtjin.mapogreen.R;
@@ -56,6 +57,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     private double mCurrentLng; //Long = X, Lat = Yㅌ
     private double mCurrentLat;
     boolean isSearch;
+    boolean initTraking = true;
 
     ArrayList<Document> bigMartList = new ArrayList<>(); //대형마트 MT1
     ArrayList<Document> gs24List = new ArrayList<>(); //편의점 CS2
@@ -100,15 +102,12 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         fab3.setOnClickListener(this);
         searchDetailFab.setOnClickListener(this);
 
-        /*//기본위치
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633);
-        mMapView.setMapCenterPoint(mapPoint, true);*/
-
+        Toast.makeText(this, "맵을 로딩중입니다", Toast.LENGTH_SHORT).show();
         //현재위치 업데이트
         mMapView.setCurrentLocationEventListener(this);
         //setCurrentLocationTrackingMode (지도랑 현재위치 좌표 찍어주고 따라다닌다.)
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
-
+        mLoaderLayout.setVisibility(View.VISIBLE);
     }
 
 
@@ -587,14 +586,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
         Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
-        //현재위치 찾기 버튼을 누른 경우는 검색
-        if (isSearch) {
-            //requestSearchLocal("병원");
-
-        }
-        //트래킹 모드 off (한번만 트래킹 모드로 현재위치 찾아주게 조작했다.)
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
-        isSearch = false;
         mLoaderLayout.setVisibility(View.GONE);
     }
 

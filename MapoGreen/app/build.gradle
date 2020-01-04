@@ -66,12 +66,15 @@ dependencies {
     implementation 'com.ramotion.circlemenu:circle-menu:0.3.2'
 
     //레트로핏 통신
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     implementation 'com.squareup.okhttp3:okhttp:3.14.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
 
     //FancyToast
     implementation 'com.github.Shashank02051997:FancyToast-Android:0.1.6'
+
+    //Chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 }
