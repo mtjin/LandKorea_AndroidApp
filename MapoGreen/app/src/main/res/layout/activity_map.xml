@@ -98,6 +98,15 @@
         android:backgroundTint="@color/colorPrimary"
         android:src="@drawable/ic_add_black_24dp"
         />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_detail"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="15sp"
+        android:src="@drawable/ic_search_detail_mint_24dp"
+        />
 
     <include
         layout="@layout/view_loader"

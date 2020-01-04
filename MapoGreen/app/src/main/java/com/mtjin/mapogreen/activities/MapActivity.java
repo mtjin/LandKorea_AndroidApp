@@ -45,7 +45,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     Button mOkButton;
     private Animation fab_open, fab_close;
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab, fab1, fab2, fab3;
+    private FloatingActionButton fab, fab1, fab2, fab3, searchDetailFab;
     RelativeLayout mLoaderLayout;
 
     //value
@@ -68,6 +68,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         fab1 = findViewById(R.id.fab1);
         fab2 = findViewById(R.id.fab2);
         fab3 = findViewById(R.id.fab3);
+        searchDetailFab = findViewById(R.id.fab_detail);
         mLoaderLayout = findViewById(R.id.loaderLayout);
 
         mMapView = new MapView(this);
@@ -124,6 +125,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
                 mLoaderLayout.setVisibility(View.GONE);
+                break;
+            case R.id.fab_detail:
                 break;
             case R.id.map_btn_ok:
                 mLoaderLayout.setVisibility(View.VISIBLE);
@@ -353,6 +356,9 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                             marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
                                                                                                             marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                             mMapView.addPOIItem(marker);
+                                                                                                            //자세히보기 fab 버튼 보이게
+                                                                                                            mLoaderLayout.setVisibility(View.GONE);
+                                                                                                            searchDetailFab.setVisibility(View.VISIBLE);
                                                                                                         }
                                                                                                     }
                                                                                                 }
