@@ -1,9 +1,12 @@
 package com.mtjin.mapogreen.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Meta {
+public class Meta implements Parcelable {
 
     @SerializedName("same_name")
     @Expose
@@ -50,4 +53,39 @@ public class Meta {
         this.isEnd = isEnd;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.sameName, flags);
+        dest.writeValue(this.pageableCount);
+        dest.writeValue(this.totalCount);
+        dest.writeValue(this.isEnd);
+    }
+
+    public Meta() {
+    }
+
+    protected Meta(Parcel in) {
+        this.sameName = in.readParcelable(SameName.class.getClassLoader());
+        this.pageableCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.totalCount = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.isEnd = (Boolean) in.readValue(Boolean.class.getClassLoader());
+    }
+
+    public static final Creator<Meta> CREATOR = new Creator<Meta>() {
+        @Override
+        public Meta createFromParcel(Parcel source) {
+            return new Meta(source);
+        }
+
+        @Override
+        public Meta[] newArray(int size) {
+            return new Meta[size];
+        }
+    };
 }

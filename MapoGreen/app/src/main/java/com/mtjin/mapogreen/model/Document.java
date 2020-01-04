@@ -1,9 +1,12 @@
 package com.mtjin.mapogreen.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Document {
+public class Document implements Parcelable {
 
     @SerializedName("place_name")
     @Expose
@@ -138,4 +141,55 @@ public class Document {
         this.y = y;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.placeName);
+        dest.writeString(this.distance);
+        dest.writeString(this.placeUrl);
+        dest.writeString(this.categoryName);
+        dest.writeString(this.addressName);
+        dest.writeString(this.roadAddressName);
+        dest.writeString(this.id);
+        dest.writeString(this.phone);
+        dest.writeString(this.categoryGroupCode);
+        dest.writeString(this.categoryGroupName);
+        dest.writeString(this.x);
+        dest.writeString(this.y);
+    }
+
+    public Document() {
+    }
+
+    protected Document(Parcel in) {
+        this.placeName = in.readString();
+        this.distance = in.readString();
+        this.placeUrl = in.readString();
+        this.categoryName = in.readString();
+        this.addressName = in.readString();
+        this.roadAddressName = in.readString();
+        this.id = in.readString();
+        this.phone = in.readString();
+        this.categoryGroupCode = in.readString();
+        this.categoryGroupName = in.readString();
+        this.x = in.readString();
+        this.y = in.readString();
+    }
+
+    public static final Parcelable.Creator<Document> CREATOR = new Parcelable.Creator<Document>() {
+        @Override
+        public Document createFromParcel(Parcel source) {
+            return new Document(source);
+        }
+
+        @Override
+        public Document[] newArray(int size) {
+            return new Document[size];
+        }
+    };
 }

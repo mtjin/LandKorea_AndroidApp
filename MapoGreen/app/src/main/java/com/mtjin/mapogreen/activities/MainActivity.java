@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String TAG = "MainActivityTAG";
+    private final static String TAG = "MainTAG";
     private CircleMenuView mCircleMenuView;
 
     @Override
