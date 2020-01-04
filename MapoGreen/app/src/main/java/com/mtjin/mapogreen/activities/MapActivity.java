@@ -236,106 +236,122 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                         int tagNum = 10;
                                                                                                         for(Document document : bigMartList){
                                                                                                             MapPOIItem marker = new MapPOIItem();
-                                                                                                            marker.setItemName("대형마트");
+                                                                                                            marker.setItemName(document.getPlaceName() + "(대형마트)");
                                                                                                             marker.setTag(tagNum++);
                                                                                                             double x = Double.parseDouble(document.getY());
                                                                                                             double y = Double.parseDouble(document.getX());
                                                                                                             //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
                                                                                                             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
                                                                                                             marker.setMapPoint(mapPoint);
-                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
-                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                                                                                            marker.setCustomImageResourceId(R.drawable.ic_big_mart_marker); // 마커 이미지.
+                                                                                                            marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                                                                                            marker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
                                                                                                             mMapView.addPOIItem(marker);
                                                                                                         }
                                                                                                         for(Document document : gs24List){
                                                                                                             MapPOIItem marker = new MapPOIItem();
-                                                                                                            marker.setItemName("편의점");
+                                                                                                            marker.setItemName(document.getPlaceName()+ "(편의점)");
                                                                                                             marker.setTag(tagNum++);
                                                                                                             double x = Double.parseDouble(document.getY());
                                                                                                             double y = Double.parseDouble(document.getX());
                                                                                                             //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
                                                                                                             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
                                                                                                             marker.setMapPoint(mapPoint);
-                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                                                                                            marker.setCustomImageResourceId(R.drawable.ic_24_mart_marker); // 마커 이미지.
+                                                                                                            marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                                                                                            marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                             mMapView.addPOIItem(marker);
                                                                                                         }
                                                                                                         for(Document document : schoolList){
                                                                                                             MapPOIItem marker = new MapPOIItem();
-                                                                                                            marker.setItemName("학교");
+                                                                                                            marker.setItemName(document.getPlaceName() + "(학교)");
                                                                                                             marker.setTag(tagNum++);
                                                                                                             double x = Double.parseDouble(document.getY());
                                                                                                             double y = Double.parseDouble(document.getX());
                                                                                                             //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
                                                                                                             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
                                                                                                             marker.setMapPoint(mapPoint);
-                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                                                                                            marker.setCustomImageResourceId(R.drawable.ic_school_marker); // 마커 이미지.
+                                                                                                            marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                                                                                            marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                             mMapView.addPOIItem(marker);
                                                                                                         }
                                                                                                         for(Document document : academyList){
                                                                                                             MapPOIItem marker = new MapPOIItem();
-                                                                                                            marker.setItemName("학원");
+                                                                                                            marker.setItemName(document.getPlaceName() + "(학원)");
                                                                                                             marker.setTag(tagNum++);
                                                                                                             double x = Double.parseDouble(document.getY());
                                                                                                             double y = Double.parseDouble(document.getX());
                                                                                                             //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
                                                                                                             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
                                                                                                             marker.setMapPoint(mapPoint);
-                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                                                                                            marker.setCustomImageResourceId(R.drawable.ic_academy_marker); // 마커 이미지.
+                                                                                                            marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                                                                                            marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                             mMapView.addPOIItem(marker);
                                                                                                         }
                                                                                                         for(Document document : subwayList){
                                                                                                             MapPOIItem marker = new MapPOIItem();
-                                                                                                            marker.setItemName("지하철");
+                                                                                                            marker.setItemName(document.getPlaceName() + "(지하철)");
                                                                                                             marker.setTag(tagNum++);
                                                                                                             double x = Double.parseDouble(document.getY());
                                                                                                             double y = Double.parseDouble(document.getX());
                                                                                                             //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
                                                                                                             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
                                                                                                             marker.setMapPoint(mapPoint);
-                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                                                                                            marker.setCustomImageResourceId(R.drawable.ic_subway_marker); // 마커 이미지.
+                                                                                                            marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                                                                                            marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                             mMapView.addPOIItem(marker);
                                                                                                         }
                                                                                                         for(Document document : bankList){
                                                                                                             MapPOIItem marker = new MapPOIItem();
-                                                                                                            marker.setItemName("은행");
+                                                                                                            marker.setItemName(document.getPlaceName() + "(은행)");
                                                                                                             marker.setTag(tagNum++);
                                                                                                             double x = Double.parseDouble(document.getY());
                                                                                                             double y = Double.parseDouble(document.getX());
                                                                                                             //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
                                                                                                             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
                                                                                                             marker.setMapPoint(mapPoint);
-                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                                                                                            marker.setCustomImageResourceId(R.drawable.ic_bank_marker); // 마커 이미지.
+                                                                                                            marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                                                                                            marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                             mMapView.addPOIItem(marker);
                                                                                                         }
                                                                                                         for(Document document : hospitalList){
                                                                                                             MapPOIItem marker = new MapPOIItem();
-                                                                                                            marker.setItemName("병원");
+                                                                                                            marker.setItemName(document.getPlaceName() + "(병원)");
                                                                                                             marker.setTag(tagNum++);
                                                                                                             double x = Double.parseDouble(document.getY());
                                                                                                             double y = Double.parseDouble(document.getX());
                                                                                                             //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
                                                                                                             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
                                                                                                             marker.setMapPoint(mapPoint);
-                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                                                                                            marker.setCustomImageResourceId(R.drawable.ic_hospital_marker); // 마커 이미지.
+                                                                                                            marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                                                                                            marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                             mMapView.addPOIItem(marker);
                                                                                                         }
                                                                                                         for(Document document : pharmacyList){
                                                                                                             MapPOIItem marker = new MapPOIItem();
-                                                                                                            marker.setItemName("약국");
+                                                                                                            marker.setItemName(document.getPlaceName() + "(약국)");
                                                                                                             marker.setTag(tagNum++);
                                                                                                             double x = Double.parseDouble(document.getY());
                                                                                                             double y = Double.parseDouble(document.getX());
                                                                                                             //카카오맵은 참고로 new MapPoint()로  생성못함. 좌표기준이 여러개라 이렇게 메소드로 생성해야함
                                                                                                             MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(x, y);
                                                                                                             marker.setMapPoint(mapPoint);
-                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.YellowPin); // 기본으로 제공하는 BluePin 마커 모양.
-                                                                                                            marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+                                                                                                            marker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                                                                                                            marker.setCustomImageResourceId(R.drawable.ic_pharmacy_marker); // 마커 이미지.
+                                                                                                            marker.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                                                                                                            marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                             mMapView.addPOIItem(marker);
                                                                                                         }
                                                                                                     }
