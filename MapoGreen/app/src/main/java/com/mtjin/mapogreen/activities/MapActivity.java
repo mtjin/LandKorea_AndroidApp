@@ -3,6 +3,7 @@ package com.mtjin.mapogreen.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -49,7 +50,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     Button mOkButton;
     private Animation fab_open, fab_close;
     private Boolean isFabOpen = false;
-    private FloatingActionButton fab, fab1, fab2, fab3, searchDetailFab;
+    private FloatingActionButton fab, fab1, fab2, fab3, searchDetailFab, stopTrackingFab;
     RelativeLayout mLoaderLayout;
 
     //value
@@ -57,7 +58,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     private double mCurrentLng; //Long = X, Lat = Yㅌ
     private double mCurrentLat;
     boolean isSearch;
-    boolean initTraking = true;
+    boolean isTrackingMode = false; //트래킹 모드인지 (3번째 버튼 현재위치 추적 눌렀을 경우 true되고 stop 버튼 누르면 false로 된다)
 
     ArrayList<Document> bigMartList = new ArrayList<>(); //대형마트 MT1
     ArrayList<Document> gs24List = new ArrayList<>(); //편의점 CS2
@@ -72,6 +73,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_map);
 
         //binding
@@ -84,6 +86,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         fab2 = findViewById(R.id.fab2);
         fab3 = findViewById(R.id.fab3);
         searchDetailFab = findViewById(R.id.fab_detail);
+        stopTrackingFab = findViewById(R.id.fab_stop_tracking);
         mLoaderLayout = findViewById(R.id.loaderLayout);
 
         mMapView = new MapView(this);
@@ -101,6 +104,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         fab2.setOnClickListener(this);
         fab3.setOnClickListener(this);
         searchDetailFab.setOnClickListener(this);
+        stopTrackingFab.setOnClickListener(this);
 
         Toast.makeText(this, "맵을 로딩중입니다", Toast.LENGTH_SHORT).show();
         //현재위치 업데이트
@@ -116,21 +120,27 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         int id = v.getId();
         switch (id) {
             case R.id.fab:
+                FancyToast.makeText(this, "1번 버튼: 검색좌표 기준으로 1km 검색" +
+                        "\n2번 버튼: 현재위치 기준으로 주변환경 검색" +
+                        "\n3번 버튼: 현재위치 추적 및 업데이트", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
                 anim();
-                FancyToast.makeText(this, "1번 버튼: 해당 좌표 중심으로 1km 검색" +
-                        "\n2번 버튼: 현재위치 검색" +
-                        "\n3번 버튼: 1km 검색한 결과 자세히보기", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
                 break;
-            case R.id.fab1:
+            case R.id.fab1: //아래버튼에서부터 1~3임
+                FancyToast.makeText(this,"현재위치 추적 시작",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                searchDetailFab.setVisibility(View.GONE);
                 mLoaderLayout.setVisibility(View.VISIBLE);
+                isTrackingMode = true;
+                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
                 anim();
+                stopTrackingFab.setVisibility(View.VISIBLE);
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab2:
+                FancyToast.makeText(this,"현재위치기준 1km 검색 시작",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                stopTrackingFab.setVisibility(View.GONE);
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
-                //현재위치업데이트
-                isSearch = true;
+                //현재 위치 기준으로 1km 검색
                 requestSearchLocal();
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
                 break;
@@ -140,6 +150,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab_detail:
+                FancyToast.makeText(this,"검색결과 상세보기",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                 Intent detailIntent = new Intent(MapActivity.this, MapSearchDetailActivity.class);
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA1, bigMartList);
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA2,gs24List);
@@ -152,6 +163,12 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA9,  cafeList);
                 startActivity(detailIntent);
                 Log.d(TAG, "fab_detail");
+                break;
+            case R.id.fab_stop_tracking:
+                isTrackingMode = false;
+                mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+                stopTrackingFab.setVisibility(View.GONE);
+                FancyToast.makeText(this,"현재위치 추적 종료",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
                 break;
             case R.id.map_btn_ok:
                 mLoaderLayout.setVisibility(View.VISIBLE);
@@ -586,8 +603,11 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mCurrentLat = mapPointGeo.latitude;
         mCurrentLng = mapPointGeo.longitude;
         Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
-        mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
         mLoaderLayout.setVisibility(View.GONE);
+        if(!isTrackingMode) {
+            mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+        }
+
     }
 
     @Override
