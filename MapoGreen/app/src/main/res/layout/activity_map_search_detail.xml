@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:padding="8dp"
         >
 
         <TextView
@@ -20,6 +21,22 @@
             android:gravity="center"
             android:text="상세보기"
             android:textSize="25sp"
+            android:textStyle="bold"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/edit_text_round_gray_background"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/binggraemelona"
+            android:gravity="start"
+            android:text="차트"
             />
 
         <com.github.mikephil.charting.charts.RadarChart
@@ -28,6 +45,210 @@
             android:layout_height="500dp"
             />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/binggraemelona"
+            android:gravity="start"
+            android:text="정보"
+            />
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            >
+
+            <RatingBar
+                android:id="@+id/mapsearchdetail_rb_ratingbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:max="10"
+                android:rating="0.0"
+                android:stepSize="0.1"
+                />
+
+            <TextView
+                android:id="@+id/mapsearchdetail_tv_rating_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:paddingBottom="3dp"
+                android:text="0.0"
+                android:textSize="30dp"
+                />
+
+
+        </LinearLayout>
+
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="대형마트: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  편의점: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  학교: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                >
+
+                <TextView
+                    android:id="@+id/item4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="학원: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  지하철: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  은행: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="병원: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  약국: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  카페: "
+                    android:textSize="15sp"
+                    />
+
+                <TextView
+                    android:id="@+id/mapsearchdetail_tv_itemcount9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="15sp"
+                    />
+            </LinearLayout>
+        </LinearLayout>
 </ScrollView>
