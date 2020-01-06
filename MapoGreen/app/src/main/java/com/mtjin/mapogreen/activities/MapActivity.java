@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mtjin.mapogreen.R;
+import com.mtjin.mapogreen.adapter.LocationAdapter;
 import com.mtjin.mapogreen.api.ApiClient;
 import com.mtjin.mapogreen.api.ApiInterface;
 import com.mtjin.mapogreen.model.Document;
@@ -57,7 +59,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     MapPoint currentMapPoint;
     private double mCurrentLng; //Long = X, Lat = Yㅌ
     private double mCurrentLat;
-    boolean isSearch;
     boolean isTrackingMode = false; //트래킹 모드인지 (3번째 버튼 현재위치 추적 눌렀을 경우 true되고 stop 버튼 누르면 false로 된다)
 
     ArrayList<Document> bigMartList = new ArrayList<>(); //대형마트 MT1
@@ -70,12 +71,18 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     ArrayList<Document> pharmacyList = new ArrayList<>(); //약국 PM9
     ArrayList<Document> cafeList = new ArrayList<>(); //카페
 
+    LocationAdapter locationAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_map);
+        initView();
+    }
 
+
+    private void initView(){
         //binding
         mSearchEdit = findViewById(R.id.map_et_search);
         mOkButton = findViewById(R.id.map_btn_ok);
@@ -88,7 +95,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         searchDetailFab = findViewById(R.id.fab_detail);
         stopTrackingFab = findViewById(R.id.fab_stop_tracking);
         mLoaderLayout = findViewById(R.id.loaderLayout);
-
         mMapView = new MapView(this);
         mMapViewContainer = findViewById(R.id.map_mv_mapcontainer);
         mMapViewContainer.addView(mMapView);
@@ -112,8 +118,30 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         //setCurrentLocationTrackingMode (지도랑 현재위치 좌표 찍어주고 따라다닌다.)
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
         mLoaderLayout.setVisibility(View.VISIBLE);
-    }
 
+        // editText 검색 텍스처이벤트
+        mSearchEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                // 입력하기 전에
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // 입력되는 텍스트에 변화가 있을 때
+                String input = charSequence.toString();
+                if(charSequence.length() > 2){
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // 입력이 끝났을 때
+
+            }
+        });
+    }
 
     @Override
     public void onClick(View v) {
@@ -198,6 +226,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
             @Override
             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
                 if (response.isSuccessful()) {
+                    assert response.body() != null;
                     if (response.body().getDocuments() != null) {
                         Log.d(TAG, "bigMartList Success");
                         bigMartList.addAll(response.body().getDocuments());
