@@ -115,13 +115,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mMapView.setMapViewEventListener(this); // this에 MapView.MapViewEventListener 구현.
         mMapView.setPOIItemEventListener(this);
         mMapView.setOpenAPIKeyAuthenticationResultListener(this);
-        mMapView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //맵뷰클릭시 검색창 사라지게함
-                recyclerView.setVisibility(View.GONE);
-            }
-        });
+
         //버튼클릭
         mOkButton.setOnClickListener(this);
         fab.setOnClickListener(this);
@@ -623,7 +617,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Override
     public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
-
+        //검색창켜져있을때 맵클릭하면 검색창 사라지게함
+        recyclerView.setVisibility(View.GONE);
     }
 
     @Override
