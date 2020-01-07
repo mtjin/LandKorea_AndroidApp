@@ -15,7 +15,7 @@ import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.mtjin.mapogreen.R;
-import com.mtjin.mapogreen.model.Document;
+import com.mtjin.mapogreen.model.category_search.Document;
 import com.mtjin.mapogreen.utils.IntentKey;
 
 import java.util.ArrayList;

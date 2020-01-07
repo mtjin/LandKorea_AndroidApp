@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.mtjin.mapogreen.model.Document;
-import com.mtjin.mapogreen.model.Meta;
 
 import java.util.ArrayList;
 import java.util.List;

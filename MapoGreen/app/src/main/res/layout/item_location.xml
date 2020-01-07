@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:padding="8dp"
+    android:layout_height="wrap_content">
     <TextView
-        android:layout_margin="4dp"
+        android:id="@+id/ltem_location_tv_placename"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/binggraemelona"
-        android:text="검색결과"/>
+        android:text="장소이름"/>
+    <TextView
+        android:id="@+id/ltem_location_tv_address"
+        android:textSize="12dp"
+        android:textColor="@color/colorGray"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/binggraemelona"
+        android:text="장소주소"/>
 </LinearLayout>

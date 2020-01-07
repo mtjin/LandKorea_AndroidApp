@@ -1,4 +1,4 @@
-package com.mtjin.mapogreen.model;
+package com.mtjin.mapogreen.model.category_search;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,11 +1,15 @@
 package com.mtjin.mapogreen.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,7 +27,7 @@ import com.mtjin.mapogreen.R;
 import com.mtjin.mapogreen.adapter.LocationAdapter;
 import com.mtjin.mapogreen.api.ApiClient;
 import com.mtjin.mapogreen.api.ApiInterface;
-import com.mtjin.mapogreen.model.Document;
+import com.mtjin.mapogreen.model.category_search.Document;
 import com.mtjin.mapogreen.model.category_search.CategoryResult;
 import com.mtjin.mapogreen.utils.IntentKey;
 import com.shashank.sony.fancytoastlib.FancyToast;
@@ -54,6 +58,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     private Boolean isFabOpen = false;
     private FloatingActionButton fab, fab1, fab2, fab3, searchDetailFab, stopTrackingFab;
     RelativeLayout mLoaderLayout;
+    RecyclerView recyclerView;
 
     //value
     MapPoint currentMapPoint;
@@ -71,7 +76,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     ArrayList<Document> pharmacyList = new ArrayList<>(); //약국 PM9
     ArrayList<Document> cafeList = new ArrayList<>(); //카페
 
-    LocationAdapter locationAdapter;
+    ArrayList<Document> documentArrayList = new ArrayList<>(); //지역명 검색 결과 리스트
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +88,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     }
 
 
-    private void initView(){
+    private void initView() {
         //binding
         mSearchEdit = findViewById(R.id.map_et_search);
         mOkButton = findViewById(R.id.map_btn_ok);
@@ -98,11 +104,24 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mMapView = new MapView(this);
         mMapViewContainer = findViewById(R.id.map_mv_mapcontainer);
         mMapViewContainer.addView(mMapView);
+        recyclerView = findViewById(R.id.map_recyclerview);
+        LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), mSearchEdit, recyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false); //레이아웃매니저 생성
+        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL)); //아래구분선 세팅
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(locationAdapter);
 
         //리스너 세팅
         mMapView.setMapViewEventListener(this); // this에 MapView.MapViewEventListener 구현.
         mMapView.setPOIItemEventListener(this);
         mMapView.setOpenAPIKeyAuthenticationResultListener(this);
+        mMapView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //맵뷰클릭시 검색창 사라지게함
+                recyclerView.setVisibility(View.GONE);
+            }
+        });
         //버튼클릭
         mOkButton.setOnClickListener(this);
         fab.setOnClickListener(this);
@@ -124,21 +143,60 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
                 // 입력하기 전에
+                recyclerView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                // 입력되는 텍스트에 변화가 있을 때
-                String input = charSequence.toString();
-                if(charSequence.length() > 2){
+                if (charSequence.length() >= 1) {
+                    // if (SystemClock.elapsedRealtime() - mLastClickTime < 500) {
 
+                    documentArrayList.clear();
+                    locationAdapter.clear();
+                    locationAdapter.notifyDataSetChanged();
+                    ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+                    Call<CategoryResult> call = apiInterface.getSearchLocation(getString(R.string.restapi_key), charSequence.toString(), 10);
+                    call.enqueue(new Callback<CategoryResult>() {
+                        @Override
+                        public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                            if (response.isSuccessful()) {
+                                assert response.body() != null;
+                                for (Document document : response.body().getDocuments()) {
+                                    locationAdapter.addItem(document);
+                                }
+                                locationAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NotNull Call<CategoryResult> call, @NotNull Throwable t) {
+
+                        }
+                    });
+                    //}
+                    //mLastClickTime = SystemClock.elapsedRealtime();
+                } else {
+                    if (charSequence.length() <= 0) {
+                        recyclerView.setVisibility(View.GONE);
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 // 입력이 끝났을 때
+            }
+        });
 
+        mSearchEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    Toast.makeText(getApplicationContext(), "Got the focus", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Lost the focus", Toast.LENGTH_LONG).show();
+                    recyclerView.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -154,7 +212,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 anim();
                 break;
             case R.id.fab1: //아래버튼에서부터 1~3임
-                FancyToast.makeText(this,"현재위치 추적 시작",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                FancyToast.makeText(this, "현재위치 추적 시작", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 searchDetailFab.setVisibility(View.GONE);
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 isTrackingMode = true;
@@ -164,7 +222,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab2:
-                FancyToast.makeText(this,"현재위치기준 1km 검색 시작",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                FancyToast.makeText(this, "현재위치기준 1km 검색 시작", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 stopTrackingFab.setVisibility(View.GONE);
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
@@ -178,17 +236,17 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab_detail:
-                FancyToast.makeText(this,"검색결과 상세보기",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                FancyToast.makeText(this, "검색결과 상세보기", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 Intent detailIntent = new Intent(MapActivity.this, MapSearchDetailActivity.class);
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA1, bigMartList);
-                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA2,gs24List);
+                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA2, gs24List);
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA3, schoolList);
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA4, academyList);
-                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA5,  subwayList);
-                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA6,  bankList);
-                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA7,  hospitalList);
-                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA8,  pharmacyList);
-                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA9,  cafeList);
+                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA5, subwayList);
+                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA6, bankList);
+                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA7, hospitalList);
+                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA8, pharmacyList);
+                detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA9, cafeList);
                 startActivity(detailIntent);
                 Log.d(TAG, "fab_detail");
                 break;
@@ -196,7 +254,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 isTrackingMode = false;
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
                 stopTrackingFab.setVisibility(View.GONE);
-                FancyToast.makeText(this,"현재위치 추적 종료",FancyToast.LENGTH_SHORT,FancyToast.SUCCESS,true).show();
+                FancyToast.makeText(this, "현재위치 추적 종료", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 break;
             case R.id.map_btn_ok:
                 mLoaderLayout.setVisibility(View.VISIBLE);
@@ -221,7 +279,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         pharmacyList.clear();
         cafeList.clear();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<CategoryResult> call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "MT1", mCurrentLng + "", mCurrentLat + "", 1000);
+        Call<CategoryResult> call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "MT1", mCurrentLng + "", mCurrentLat + "", 1000);
         call.enqueue(new Callback<CategoryResult>() {
             @Override
             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -231,67 +289,67 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                         Log.d(TAG, "bigMartList Success");
                         bigMartList.addAll(response.body().getDocuments());
                     }
-                    call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "CS2", mCurrentLng + "", mCurrentLat + "", 1000);
+                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CS2", mCurrentLng + "", mCurrentLat + "", 1000);
                     call.enqueue(new Callback<CategoryResult>() {
                         @Override
                         public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
-                            if(response.isSuccessful()){
+                            if (response.isSuccessful()) {
                                 assert response.body() != null;
                                 Log.d(TAG, "gs24List Success");
                                 gs24List.addAll(response.body().getDocuments());
-                                call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "SC4", mCurrentLng + "", mCurrentLat + "", 1000);
+                                call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "SC4", mCurrentLng + "", mCurrentLat + "", 1000);
                                 call.enqueue(new Callback<CategoryResult>() {
                                     @Override
                                     public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
-                                        if(response.isSuccessful()){
+                                        if (response.isSuccessful()) {
                                             assert response.body() != null;
                                             Log.d(TAG, "schoolList Success");
                                             schoolList.addAll(response.body().getDocuments());
-                                            call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "AC5", mCurrentLng + "", mCurrentLat + "", 1000);
+                                            call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "AC5", mCurrentLng + "", mCurrentLat + "", 1000);
                                             call.enqueue(new Callback<CategoryResult>() {
                                                 @Override
                                                 public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
-                                                    if(response.isSuccessful()) {
+                                                    if (response.isSuccessful()) {
                                                         assert response.body() != null;
                                                         Log.d(TAG, "academyList Success");
                                                         academyList.addAll(response.body().getDocuments());
-                                                        call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "SW8", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                        call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "SW8", mCurrentLng + "", mCurrentLat + "", 1000);
                                                         call.enqueue(new Callback<CategoryResult>() {
                                                             @Override
                                                             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
-                                                                if(response.isSuccessful()){
+                                                                if (response.isSuccessful()) {
                                                                     assert response.body() != null;
                                                                     Log.d(TAG, "subwayList Success");
                                                                     subwayList.addAll(response.body().getDocuments());
-                                                                    call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "BK9", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "BK9", mCurrentLng + "", mCurrentLat + "", 1000);
                                                                     call.enqueue(new Callback<CategoryResult>() {
                                                                         @Override
                                                                         public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
-                                                                            if(response.isSuccessful()){
+                                                                            if (response.isSuccessful()) {
                                                                                 assert response.body() != null;
                                                                                 Log.d(TAG, "bankList Success");
                                                                                 bankList.addAll(response.body().getDocuments());
-                                                                                call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "HP8", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                                                call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "HP8", mCurrentLng + "", mCurrentLat + "", 1000);
                                                                                 call.enqueue(new Callback<CategoryResult>() {
                                                                                     @Override
                                                                                     public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
-                                                                                        if(response.isSuccessful()){
+                                                                                        if (response.isSuccessful()) {
                                                                                             assert response.body() != null;
                                                                                             Log.d(TAG, "hospitalList Success");
                                                                                             hospitalList.addAll(response.body().getDocuments());
-                                                                                            call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "PM9", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                                                            call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "PM9", mCurrentLng + "", mCurrentLat + "", 1000);
                                                                                             call.enqueue(new Callback<CategoryResult>() {
                                                                                                 @Override
                                                                                                 public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
-                                                                                                    if(response.isSuccessful()){
+                                                                                                    if (response.isSuccessful()) {
                                                                                                         assert response.body() != null;
                                                                                                         Log.d(TAG, "pharmacyList Success");
                                                                                                         pharmacyList.addAll(response.body().getDocuments());
-                                                                                                        call = apiInterface.getResearchCategory(getString(R.string.restapi_key), "CE7", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                                                                        call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CE7", mCurrentLng + "", mCurrentLat + "", 1000);
                                                                                                         call.enqueue(new Callback<CategoryResult>() {
                                                                                                             @Override
                                                                                                             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
-                                                                                                                if(response.isSuccessful()){
+                                                                                                                if (response.isSuccessful()) {
                                                                                                                     assert response.body() != null;
                                                                                                                     Log.d(TAG, "cafeList Success");
                                                                                                                     cafeList.addAll(response.body().getDocuments());
@@ -304,15 +362,15 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     );
                                                                                                                     circle1.setTag(1234);
                                                                                                                     mMapView.addCircle(circle1);
-                                                                                                                    Log.d("SIZE1" , bigMartList.size()+"");
-                                                                                                                    Log.d("SIZE2" , gs24List.size()+"");
-                                                                                                                    Log.d("SIZE3" , schoolList.size()+"");
-                                                                                                                    Log.d("SIZE4" , academyList.size()+"");
-                                                                                                                    Log.d("SIZE5" , subwayList.size()+"");
-                                                                                                                    Log.d("SIZE6" , bankList.size()+"");
+                                                                                                                    Log.d("SIZE1", bigMartList.size() + "");
+                                                                                                                    Log.d("SIZE2", gs24List.size() + "");
+                                                                                                                    Log.d("SIZE3", schoolList.size() + "");
+                                                                                                                    Log.d("SIZE4", academyList.size() + "");
+                                                                                                                    Log.d("SIZE5", subwayList.size() + "");
+                                                                                                                    Log.d("SIZE6", bankList.size() + "");
                                                                                                                     //마커 생성
                                                                                                                     int tagNum = 10;
-                                                                                                                    for(Document document : bigMartList){
+                                                                                                                    for (Document document : bigMartList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
                                                                                                                         marker.setItemName(document.getPlaceName() + "(대형마트)");
                                                                                                                         marker.setTag(tagNum++);
@@ -327,9 +385,9 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                         marker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
                                                                                                                         mMapView.addPOIItem(marker);
                                                                                                                     }
-                                                                                                                    for(Document document : gs24List){
+                                                                                                                    for (Document document : gs24List) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName()+ "(편의점)");
+                                                                                                                        marker.setItemName(document.getPlaceName() + "(편의점)");
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -342,7 +400,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                         marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                                         mMapView.addPOIItem(marker);
                                                                                                                     }
-                                                                                                                    for(Document document : schoolList){
+                                                                                                                    for (Document document : schoolList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
                                                                                                                         marker.setItemName(document.getPlaceName() + "(학교)");
                                                                                                                         marker.setTag(tagNum++);
@@ -357,7 +415,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                         marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                                         mMapView.addPOIItem(marker);
                                                                                                                     }
-                                                                                                                    for(Document document : academyList){
+                                                                                                                    for (Document document : academyList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
                                                                                                                         marker.setItemName(document.getPlaceName() + "(학원)");
                                                                                                                         marker.setTag(tagNum++);
@@ -372,7 +430,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                         marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                                         mMapView.addPOIItem(marker);
                                                                                                                     }
-                                                                                                                    for(Document document : subwayList){
+                                                                                                                    for (Document document : subwayList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
                                                                                                                         marker.setItemName(document.getPlaceName() + "(지하철)");
                                                                                                                         marker.setTag(tagNum++);
@@ -387,7 +445,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                         marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                                         mMapView.addPOIItem(marker);
                                                                                                                     }
-                                                                                                                    for(Document document : bankList){
+                                                                                                                    for (Document document : bankList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
                                                                                                                         marker.setItemName(document.getPlaceName() + "(은행)");
                                                                                                                         marker.setTag(tagNum++);
@@ -402,7 +460,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                         marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                                         mMapView.addPOIItem(marker);
                                                                                                                     }
-                                                                                                                    for(Document document : hospitalList){
+                                                                                                                    for (Document document : hospitalList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
                                                                                                                         marker.setItemName(document.getPlaceName() + "(병원)");
                                                                                                                         marker.setTag(tagNum++);
@@ -417,7 +475,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                         marker.setCustomImageAnchor(0.5f, 1.0f);
                                                                                                                         mMapView.addPOIItem(marker);
                                                                                                                     }
-                                                                                                                    for(Document document : pharmacyList){
+                                                                                                                    for (Document document : pharmacyList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
                                                                                                                         marker.setItemName(document.getPlaceName() + "(약국)");
                                                                                                                         marker.setTag(tagNum++);
@@ -435,7 +493,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                         mLoaderLayout.setVisibility(View.GONE);
                                                                                                                         searchDetailFab.setVisibility(View.VISIBLE);
                                                                                                                     }
-                                                                                                                    for(Document document : cafeList){
+                                                                                                                    for (Document document : cafeList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
                                                                                                                         marker.setItemName(document.getPlaceName() + "(카페)");
                                                                                                                         marker.setTag(tagNum++);
@@ -625,7 +683,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     public void onCurrentLocationUpdate(MapView mapView, MapPoint mapPoint, float accuracyInMeters) {
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         Log.i(TAG, String.format("MapView onCurrentLocationUpdate (%f,%f) accuracy (%f)", mapPointGeo.latitude, mapPointGeo.longitude, accuracyInMeters));
-         currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
+        currentMapPoint = MapPoint.mapPointWithGeoCoord(mapPointGeo.latitude, mapPointGeo.longitude);
         //이 좌표로 지도 중심 이동
         mMapView.setMapCenterPoint(currentMapPoint, true);
         //전역변수로 현재 좌표 저장
@@ -633,7 +691,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mCurrentLng = mapPointGeo.longitude;
         Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
         mLoaderLayout.setVisibility(View.GONE);
-        if(!isTrackingMode) {
+        if (!isTrackingMode) {
             mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
         }
 
@@ -661,5 +719,10 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         super.onDestroy();
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
         mMapView.setShowCurrentLocationMarker(false);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

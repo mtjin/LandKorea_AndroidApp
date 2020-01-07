@@ -16,7 +16,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:orientation="horizontal"
             android:weightSum="10"
             >
@@ -37,6 +37,11 @@
                 android:layout_marginRight="8dp"
                 />
         </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/map_recyclerview"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"/>
 
         <RelativeLayout
             android:id="@+id/map_mv_mapcontainer"

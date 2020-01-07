@@ -2,8 +2,8 @@ package com.mtjin.mapogreen.model.research;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.mtjin.mapogreen.model.Document;
-import com.mtjin.mapogreen.model.Meta;
+import com.mtjin.mapogreen.model.category_search.Document;
+import com.mtjin.mapogreen.model.category_search.Meta;
 
 import java.util.List;
 /*
