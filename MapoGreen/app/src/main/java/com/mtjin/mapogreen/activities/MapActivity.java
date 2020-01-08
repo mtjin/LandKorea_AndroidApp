@@ -29,8 +29,11 @@ import com.mtjin.mapogreen.api.ApiClient;
 import com.mtjin.mapogreen.api.ApiInterface;
 import com.mtjin.mapogreen.model.category_search.Document;
 import com.mtjin.mapogreen.model.category_search.CategoryResult;
+import com.mtjin.mapogreen.utils.BusProvider;
 import com.mtjin.mapogreen.utils.IntentKey;
 import com.shashank.sony.fancytoastlib.FancyToast;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 
 import net.daum.mf.map.api.MapCircle;
@@ -64,7 +67,11 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     MapPoint currentMapPoint;
     private double mCurrentLng; //Long = X, Lat = Yㅌ
     private double mCurrentLat;
+    private double mSearchLng;
+    private double mSearchLat;
+    private String mSearchName;
     boolean isTrackingMode = false; //트래킹 모드인지 (3번째 버튼 현재위치 추적 눌렀을 경우 true되고 stop 버튼 누르면 false로 된다)
+    Bus bus = BusProvider.getInstance();
 
     ArrayList<Document> bigMartList = new ArrayList<>(); //대형마트 MT1
     ArrayList<Document> gs24List = new ArrayList<>(); //편의점 CS2
@@ -84,6 +91,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_map);
+        bus.register(this); //정류소 등록
         initView();
     }
 
@@ -227,6 +235,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
             case R.id.fab3:
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
+                searchLocation();
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab_detail:
@@ -260,6 +269,17 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
         }
+    }
+
+    private void searchLocation() {
+        MapPOIItem marker = new MapPOIItem();
+        marker.setItemName(mSearchName);
+        marker.setTag(10000);
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(mSearchLat, mSearchLng);
+        marker.setMapPoint(mapPoint);
+        marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+        marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        mMapView.addPOIItem(marker);
     }
 
     private void requestSearchLocal() {
@@ -707,6 +727,20 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     public void onCurrentLocationUpdateCancelled(MapView mapView) {
         Log.i(TAG, "onCurrentLocationUpdateCancelled");
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+    }
+
+    @Subscribe //검색예시 클릭시 이벤트 오토버스
+    public void search(Document document) {//public항상 붙여줘야함
+        Log.d(TAG, "Otto bus Search Cllick => " + document.getPlaceName());
+        mSearchName = document.getPlaceName();
+        mSearchLng = Double.parseDouble(document.getX());
+        mSearchLat = Double.parseDouble(document.getY());
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        bus.unregister(this); //이액티비티 떠나면 정류소 해제해줌
     }
 
     @Override
