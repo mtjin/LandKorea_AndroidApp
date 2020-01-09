@@ -230,11 +230,14 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab2:
+
                 FancyToast.makeText(this, "현재위치기준 1km 검색 시작", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 stopTrackingFab.setVisibility(View.GONE);
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
                 //현재 위치 기준으로 1km 검색
+                mMapView.removeAllPOIItems();
+                mMapView.removeAllCircles();
                 requestSearchLocal(mCurrentLng, mCurrentLat);
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
                 break;
@@ -242,6 +245,9 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
                 if(mSearchLat != -1 && mSearchLng != -1){
+                    mMapView.removeAllPOIItems();
+                    mMapView.removeAllCircles();
+                    mMapView.addPOIItem(searchMarker);
                     requestSearchLocal(mSearchLng, mSearchLat);
                 }else{
                     FancyToast.makeText(this, "검색 먼저 해주세요", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
@@ -273,6 +279,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     }
 
     private void requestSearchLocal(double x, double y) {
+
         bigMartList.clear();
         gs24List.clear();
         schoolList.clear();
@@ -359,12 +366,12 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     cafeList.addAll(response.body().getDocuments());
                                                                                                                     //모두 통신 성공 시 circle 생성
                                                                                                                     MapCircle circle1 = new MapCircle(
-                                                                                                                            MapPoint.mapPointWithGeoCoord(x, y), // center
+                                                                                                                            MapPoint.mapPointWithGeoCoord(y, x), // center
                                                                                                                             1000, // radius
                                                                                                                             Color.argb(128, 255, 0, 0), // strokeColor
                                                                                                                             Color.argb(128, 0, 255, 0) // fillColor
                                                                                                                     );
-                                                                                                                    circle1.setTag(1234);
+                                                                                                                    circle1.setTag(5678);
                                                                                                                     mMapView.addCircle(circle1);
                                                                                                                     Log.d("SIZE1", bigMartList.size() + "");
                                                                                                                     Log.d("SIZE2", gs24List.size() + "");
