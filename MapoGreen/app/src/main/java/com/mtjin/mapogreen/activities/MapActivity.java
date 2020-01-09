@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -56,7 +57,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     MapView mMapView;
     ViewGroup mMapViewContainer;
     EditText mSearchEdit;
-    Button mOkButton;
     private Animation fab_open, fab_close;
     private Boolean isFabOpen = false;
     private FloatingActionButton fab, fab1, fab2, fab3, searchDetailFab, stopTrackingFab;
@@ -67,8 +67,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     MapPoint currentMapPoint;
     private double mCurrentLng; //Long = X, Lat = Yㅌ
     private double mCurrentLat;
-    private double mSearchLng;
-    private double mSearchLat;
+    private double mSearchLng = -1;
+    private double mSearchLat = -1;
     private String mSearchName;
     boolean isTrackingMode = false; //트래킹 모드인지 (3번째 버튼 현재위치 추적 눌렀을 경우 true되고 stop 버튼 누르면 false로 된다)
     Bus bus = BusProvider.getInstance();
@@ -85,6 +85,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     ArrayList<Document> documentArrayList = new ArrayList<>(); //지역명 검색 결과 리스트
 
+    MapPOIItem searchMarker = new MapPOIItem();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +101,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     private void initView() {
         //binding
         mSearchEdit = findViewById(R.id.map_et_search);
-        mOkButton = findViewById(R.id.map_btn_ok);
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fab = findViewById(R.id.fab);
@@ -125,7 +126,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mMapView.setOpenAPIKeyAuthenticationResultListener(this);
 
         //버튼클릭
-        mOkButton.setOnClickListener(this);
         fab.setOnClickListener(this);
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
@@ -157,7 +157,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                     locationAdapter.clear();
                     locationAdapter.notifyDataSetChanged();
                     ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-                    Call<CategoryResult> call = apiInterface.getSearchLocation(getString(R.string.restapi_key), charSequence.toString(), 10);
+                    Call<CategoryResult> call = apiInterface.getSearchLocation(getString(R.string.restapi_key), charSequence.toString(), 15);
                     call.enqueue(new Callback<CategoryResult>() {
                         @Override
                         public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -201,6 +201,12 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 }
             }
         });
+        mSearchEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FancyToast.makeText(getApplicationContext(), "검색리스트에서 장소를 선택해주세요", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
+            }
+        });
     }
 
     @Override
@@ -229,13 +235,17 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
                 //현재 위치 기준으로 1km 검색
-                requestSearchLocal();
+                requestSearchLocal(mCurrentLng, mCurrentLat);
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
                 break;
             case R.id.fab3:
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
-                searchLocation();
+                if(mSearchLat != -1 && mSearchLng != -1){
+                    requestSearchLocal(mSearchLng, mSearchLat);
+                }else{
+                    FancyToast.makeText(this, "검색 먼저 해주세요", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
+                }
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab_detail:
@@ -259,30 +269,10 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 stopTrackingFab.setVisibility(View.GONE);
                 FancyToast.makeText(this, "현재위치 추적 종료", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 break;
-            case R.id.map_btn_ok:
-                mLoaderLayout.setVisibility(View.VISIBLE);
-                if (mSearchEdit.getText().toString().trim().length() >= 3) {
-
-                } else {
-                    FancyToast.makeText(this, "세글자 이상 입력해주세요", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
-                }
-                mLoaderLayout.setVisibility(View.GONE);
-                break;
         }
     }
 
-    private void searchLocation() {
-        MapPOIItem marker = new MapPOIItem();
-        marker.setItemName(mSearchName);
-        marker.setTag(10000);
-        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(mSearchLat, mSearchLng);
-        marker.setMapPoint(mapPoint);
-        marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
-        marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
-        mMapView.addPOIItem(marker);
-    }
-
-    private void requestSearchLocal() {
+    private void requestSearchLocal(double x, double y) {
         bigMartList.clear();
         gs24List.clear();
         schoolList.clear();
@@ -293,7 +283,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         pharmacyList.clear();
         cafeList.clear();
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-        Call<CategoryResult> call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "MT1", mCurrentLng + "", mCurrentLat + "", 1000);
+        Call<CategoryResult> call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "MT1", x + "", y + "", 1000);
         call.enqueue(new Callback<CategoryResult>() {
             @Override
             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -303,7 +293,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                         Log.d(TAG, "bigMartList Success");
                         bigMartList.addAll(response.body().getDocuments());
                     }
-                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CS2", mCurrentLng + "", mCurrentLat + "", 1000);
+                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CS2", x + "", y + "", 1000);
                     call.enqueue(new Callback<CategoryResult>() {
                         @Override
                         public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -311,7 +301,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                 assert response.body() != null;
                                 Log.d(TAG, "gs24List Success");
                                 gs24List.addAll(response.body().getDocuments());
-                                call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "SC4", mCurrentLng + "", mCurrentLat + "", 1000);
+                                call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "SC4", x + "", y + "", 1000);
                                 call.enqueue(new Callback<CategoryResult>() {
                                     @Override
                                     public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -319,7 +309,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                             assert response.body() != null;
                                             Log.d(TAG, "schoolList Success");
                                             schoolList.addAll(response.body().getDocuments());
-                                            call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "AC5", mCurrentLng + "", mCurrentLat + "", 1000);
+                                            call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "AC5", x + "", y + "", 1000);
                                             call.enqueue(new Callback<CategoryResult>() {
                                                 @Override
                                                 public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -327,7 +317,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                         assert response.body() != null;
                                                         Log.d(TAG, "academyList Success");
                                                         academyList.addAll(response.body().getDocuments());
-                                                        call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "SW8", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                        call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "SW8", x + "", y + "", 1000);
                                                         call.enqueue(new Callback<CategoryResult>() {
                                                             @Override
                                                             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -335,7 +325,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                     assert response.body() != null;
                                                                     Log.d(TAG, "subwayList Success");
                                                                     subwayList.addAll(response.body().getDocuments());
-                                                                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "BK9", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                                    call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "BK9", x + "", y + "", 1000);
                                                                     call.enqueue(new Callback<CategoryResult>() {
                                                                         @Override
                                                                         public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -343,7 +333,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                 assert response.body() != null;
                                                                                 Log.d(TAG, "bankList Success");
                                                                                 bankList.addAll(response.body().getDocuments());
-                                                                                call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "HP8", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                                                call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "HP8", x + "", y + "", 1000);
                                                                                 call.enqueue(new Callback<CategoryResult>() {
                                                                                     @Override
                                                                                     public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -351,7 +341,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                             assert response.body() != null;
                                                                                             Log.d(TAG, "hospitalList Success");
                                                                                             hospitalList.addAll(response.body().getDocuments());
-                                                                                            call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "PM9", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                                                            call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "PM9", x + "", y + "", 1000);
                                                                                             call.enqueue(new Callback<CategoryResult>() {
                                                                                                 @Override
                                                                                                 public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -359,7 +349,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                         assert response.body() != null;
                                                                                                         Log.d(TAG, "pharmacyList Success");
                                                                                                         pharmacyList.addAll(response.body().getDocuments());
-                                                                                                        call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CE7", mCurrentLng + "", mCurrentLat + "", 1000);
+                                                                                                        call = apiInterface.getSearchCategory(getString(R.string.restapi_key), "CE7", x + "", y + "", 1000);
                                                                                                         call.enqueue(new Callback<CategoryResult>() {
                                                                                                             @Override
                                                                                                             public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
@@ -369,7 +359,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     cafeList.addAll(response.body().getDocuments());
                                                                                                                     //모두 통신 성공 시 circle 생성
                                                                                                                     MapCircle circle1 = new MapCircle(
-                                                                                                                            MapPoint.mapPointWithGeoCoord(mCurrentLat, mCurrentLng), // center
+                                                                                                                            MapPoint.mapPointWithGeoCoord(x, y), // center
                                                                                                                             1000, // radius
                                                                                                                             Color.argb(128, 255, 0, 0), // strokeColor
                                                                                                                             Color.argb(128, 0, 255, 0) // fillColor
@@ -709,7 +699,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         if (!isTrackingMode) {
             mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
         }
-
     }
 
     @Override
@@ -731,10 +720,19 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Subscribe //검색예시 클릭시 이벤트 오토버스
     public void search(Document document) {//public항상 붙여줘야함
-        Log.d(TAG, "Otto bus Search Cllick => " + document.getPlaceName());
+        FancyToast.makeText(getApplicationContext(), document.getPlaceName() +" 검색", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
         mSearchName = document.getPlaceName();
         mSearchLng = Double.parseDouble(document.getX());
         mSearchLat = Double.parseDouble(document.getY());
+        mMapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(mSearchLat, mSearchLng), true);
+        mMapView.removePOIItem(searchMarker);
+        searchMarker.setItemName(mSearchName);
+        searchMarker.setTag(10000);
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(mSearchLat, mSearchLng);
+        searchMarker.setMapPoint(mapPoint);
+        searchMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+        searchMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        mMapView.addPOIItem(searchMarker);
     }
 
     @Override

@@ -15,26 +15,17 @@
         >
 
         <LinearLayout
+            android:layout_marginTop="4dp"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
-            android:weightSum="10"
             >
 
             <EditText
+                android:hint="검색할 장소를 입력 후 선택해주세요"
                 android:id="@+id/map_et_search"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
-                />
-
-            <Button
-                android:id="@+id/map_btn_ok"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="검색"
-                android:layout_marginRight="8dp"
                 />
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
