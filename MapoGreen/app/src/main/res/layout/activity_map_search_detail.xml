@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_main_gradient"
     tools:context=".activities.MapSearchDetailActivity"
     >
 
@@ -20,15 +21,11 @@
             android:fontFamily="@font/binggraemelona"
             android:gravity="center"
             android:text="상세보기"
+            android:textColor="@color/colorWhite"
             android:textSize="25sp"
             android:textStyle="bold"
             />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@drawable/edit_text_round_gray_background"
-            />
 
         <TextView
             android:layout_width="match_parent"
@@ -36,6 +33,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="@font/binggraemelona"
             android:gravity="start"
+            android:textColor="@color/colorWhite"
             android:text="차트"
             />
 
@@ -52,6 +50,7 @@
             android:fontFamily="@font/binggraemelona"
             android:gravity="start"
             android:text="정보"
+            android:textColor="@color/colorWhite"
             />
 
         <LinearLayout
@@ -83,6 +82,7 @@
                 android:paddingBottom="3dp"
                 android:text="0.0"
                 android:textSize="30dp"
+                android:textColor="@color/colorWhite"
                 />
 
 
@@ -97,6 +97,7 @@
                 >
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="대형마트: "
@@ -104,6 +105,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,6 +114,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="  편의점: "
@@ -119,6 +122,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -127,6 +131,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="  학교: "
@@ -134,6 +139,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -152,6 +158,7 @@
                 >
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/item4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -160,6 +167,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -168,6 +176,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="  지하철: "
@@ -175,6 +184,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -183,6 +193,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="  은행: "
@@ -190,6 +201,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -206,6 +218,7 @@
                 >
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="병원: "
@@ -213,6 +226,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -221,6 +235,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="  약국: "
@@ -228,6 +243,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -236,6 +252,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="  카페: "
@@ -243,6 +260,7 @@
                     />
 
                 <TextView
+                    android:textColor="@color/colorWhite"
                     android:id="@+id/mapsearchdetail_tv_itemcount9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

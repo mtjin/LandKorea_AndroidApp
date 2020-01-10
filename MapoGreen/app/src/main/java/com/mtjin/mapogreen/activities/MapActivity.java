@@ -230,6 +230,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mLoaderLayout.setVisibility(View.GONE);
                 break;
             case R.id.fab2:
+                isTrackingMode = false;
                 FancyToast.makeText(this, "현재위치기준 1km 검색 시작", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
                 stopTrackingFab.setVisibility(View.GONE);
                 mLoaderLayout.setVisibility(View.VISIBLE);
@@ -241,6 +242,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
                 break;
             case R.id.fab3:
+                isTrackingMode = false;
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
