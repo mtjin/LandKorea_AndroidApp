@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MapoGreen</string>
+    <string name="app_name">땅코리아</string>
     <string name="daummap_key">a2f83a1363b70f03937194928377a282</string>
     <string name="restapi_key">KakaoAK 58c07a0f5f77a72f1866e4c4bdb6b38a</string>
     <!-- Ted Permission -->

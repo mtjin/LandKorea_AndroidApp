@@ -5,7 +5,7 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_main"
+    android:background="@drawable/bg_main_gradient"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".activities.LoginActivity"
@@ -43,12 +43,13 @@
             />
 
         <TextView
+            android:fontFamily="@font/binggraemelona"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="땅코리아"
             android:textAllCaps="false"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+            android:textSize="40dp"
             android:textColor="@color/colorWhite"
             android:textStyle="bold"
             android:typeface="monospace"
@@ -89,17 +90,6 @@
             android:inputType="textPassword"
             android:padding="12dp"
             />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="12dp"
-            android:text="비밀번호 까먹으셨나요"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorWhite"
-            />
-
         <LinearLayout
             android:gravity="center"
             android:layout_gravity="center"
@@ -131,7 +121,9 @@
         </LinearLayout>
     </LinearLayout>
 
+
     <TextView
+        android:fontFamily="@font/binggraemelona"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -140,6 +132,17 @@
         android:layout_marginTop="12dp"
         android:text="회원가입"
         android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/colorWhite"
+        />
+    <TextView
+        android:layout_marginTop="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="12dp"
+        android:text="비밀번호 찾기"
+        android:fontFamily="@font/binggraemelona"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/colorWhite"
         />
