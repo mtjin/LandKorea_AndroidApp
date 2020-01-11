@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.text.Editable;
@@ -194,9 +195,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
-                    Toast.makeText(getApplicationContext(), "Got the focus", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Lost the focus", Toast.LENGTH_LONG).show();
                     recyclerView.setVisibility(View.GONE);
                 }
             }
@@ -246,12 +245,12 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
                 mLoaderLayout.setVisibility(View.VISIBLE);
                 anim();
-                if(mSearchLat != -1 && mSearchLng != -1){
+                if (mSearchLat != -1 && mSearchLng != -1) {
                     mMapView.removeAllPOIItems();
                     mMapView.removeAllCircles();
                     mMapView.addPOIItem(searchMarker);
                     requestSearchLocal(mSearchLng, mSearchLat);
-                }else{
+                } else {
                     FancyToast.makeText(this, "검색 먼저 해주세요", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
                 }
                 mLoaderLayout.setVisibility(View.GONE);
@@ -675,9 +674,24 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     }
 
+    public void showMap(Uri geoLocation) {
+        Intent intent;
+        try {
+            intent = new Intent(Intent.ACTION_VIEW, geoLocation);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } catch (Exception e) {
+            Toast.makeText(this, "길찾기에는 다음맵앱이 필요합니다. 다운받아주시길 바랍니다.", Toast.LENGTH_SHORT).show();
+            intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://play.google.com/store/apps/details?id=net.daum.android.map&hl=ko"));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
+
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
-
+        Log.d("AAAA", "AAAA");
+        showMap(Uri.parse("daummaps://route?sp="+mCurrentLat+ "," + mCurrentLng + "&ep=" + mSearchLat +"," +  mSearchLng+ "&by=FOOT"));
     }
 
     @Override
@@ -685,9 +699,21 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     }
 
+    // 마커 드래그이동시 호출
     @Override
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
-
+        MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
+        mSearchName = "드래그한 장소";
+        mSearchLng = mapPointGeo.longitude;
+        mSearchLat = mapPointGeo.latitude;
+        mMapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(mSearchLat, mSearchLng), true);
+        searchMarker.setItemName(mSearchName);
+        MapPoint mapPoint2 = MapPoint.mapPointWithGeoCoord(mSearchLat, mSearchLng);
+        searchMarker.setMapPoint(mapPoint2);
+        searchMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+        searchMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        searchMarker.setDraggable(true);
+        mMapView.addPOIItem(searchMarker);
     }
 
     /*
@@ -729,7 +755,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Subscribe //검색예시 클릭시 이벤트 오토버스
     public void search(Document document) {//public항상 붙여줘야함
-        FancyToast.makeText(getApplicationContext(), document.getPlaceName() +" 검색", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
+        FancyToast.makeText(getApplicationContext(), document.getPlaceName() + " 검색", FancyToast.LENGTH_SHORT, FancyToast.SUCCESS, true).show();
         mSearchName = document.getPlaceName();
         mSearchLng = Double.parseDouble(document.getX());
         mSearchLat = Double.parseDouble(document.getY());
@@ -741,8 +767,10 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         searchMarker.setMapPoint(mapPoint);
         searchMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
         searchMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        searchMarker.setDraggable(true);
         mMapView.addPOIItem(searchMarker);
     }
+
 
     @Override
     public void finish() {

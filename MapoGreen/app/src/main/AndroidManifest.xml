@@ -22,9 +22,16 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activities.SignUpActivity"></activity>
         <activity android:name=".activities.MapSearchDetailActivity" />
         <activity android:name=".activities.MapNavigationActivity" />
-        <activity android:name=".activities.MapActivity" />
+        <activity android:name=".activities.MapActivity">
+            <intent-filter>
+                <action android:name="com.google.android.gms.actions.RESERVE_TAXI_RESERVATION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
