@@ -146,13 +146,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onPermissionGranted() {
                 // 권한 요청 성공
-                Toast.makeText(LoginActivity.this, "권한 성공", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LoginActivity.this, "권한 성공", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 // 권한 요청 실패
-                Toast.makeText(LoginActivity.this, "권한 실패", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(LoginActivity.this, "권한 실패", Toast.LENGTH_SHORT).show();
             }
         };
 

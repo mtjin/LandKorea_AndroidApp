@@ -681,7 +681,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } catch (Exception e) {
-            Toast.makeText(this, "길찾기에는 다음맵앱이 필요합니다. 다운받아주시길 바랍니다.", Toast.LENGTH_SHORT).show();
+            FancyToast.makeText(getApplicationContext(), "길찾기에는 카카오맵이 필요합니다. 다운받아주시길 바랍니다.", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
             intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("https://play.google.com/store/apps/details?id=net.daum.android.map&hl=ko"));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -690,13 +690,14 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
-        Log.d("AAAA", "AAAA");
-        showMap(Uri.parse("daummaps://route?sp="+mCurrentLat+ "," + mCurrentLng + "&ep=" + mSearchLat +"," +  mSearchLng+ "&by=FOOT"));
     }
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
-
+        FancyToast.makeText(getApplicationContext(), "카카오맵으로 길찾기를 시도합니다.", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
+        String lat = String.valueOf(mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude);
+        String  lng = String.valueOf(mapPOIItem.getMapPoint().getMapPointGeoCoord().longitude);
+        showMap(Uri.parse("daummaps://route?sp="+mCurrentLat+ "," + mCurrentLng + "&ep=" + lat +"," +  lng+ "&by=FOOT"));
     }
 
     // 마커 드래그이동시 호출
