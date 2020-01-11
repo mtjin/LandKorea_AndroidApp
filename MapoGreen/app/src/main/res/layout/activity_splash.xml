@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/splash_linearlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SplashActivity"
+    >
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/binggraemelona"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Land Korea"
+        android:textAllCaps="false"
+        android:textSize="60dp"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:typeface="monospace"
+        app:fontFamily="casual"
+        />
+
+    <TextView
+        android:id="@+id/splash_one"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="330dp"
+        android:text="We can know"
+        android:textSize="25dp"
+        android:visibility="invisible"
+        app:fontFamily="cursive"
+        />
+
+    <TextView
+        android:id="@+id/splash_two"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="everything within 1km"
+        android:textSize="25dp"
+        android:visibility="invisible"
+        app:fontFamily="cursive"
+        />
+
+    <TextView
+        android:id="@+id/splash_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="taking with others about the place"
+        android:textSize="25dp"
+        android:visibility="invisible"
+        app:fontFamily="cursive"
+        />
+
+    <TextView
+        android:id="@+id/splash_four"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="-Land Korea-"
+        android:textSize="25dp"
+        android:visibility="invisible"
+        app:fontFamily="cursive"
+        />
+</LinearLayout>

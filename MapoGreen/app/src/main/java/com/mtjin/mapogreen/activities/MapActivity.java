@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -24,6 +25,8 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.crowdfire.cfalertdialog.CFAlertDialog;
+import com.google.android.gms.common.api.Api;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mtjin.mapogreen.R;
 import com.mtjin.mapogreen.adapter.LocationAdapter;
@@ -280,7 +283,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     }
 
     private void requestSearchLocal(double x, double y) {
-
         bigMartList.clear();
         gs24List.clear();
         schoolList.clear();
@@ -384,7 +386,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     int tagNum = 10;
                                                                                                                     for (Document document : bigMartList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(대형마트)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -399,7 +401,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     }
                                                                                                                     for (Document document : gs24List) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(편의점)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -414,7 +416,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     }
                                                                                                                     for (Document document : schoolList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(학교)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -429,7 +431,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     }
                                                                                                                     for (Document document : academyList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(학원)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -444,7 +446,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     }
                                                                                                                     for (Document document : subwayList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(지하철)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -459,7 +461,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     }
                                                                                                                     for (Document document : bankList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(은행)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -474,7 +476,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     }
                                                                                                                     for (Document document : hospitalList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(병원)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -489,7 +491,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     }
                                                                                                                     for (Document document : pharmacyList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(약국)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -507,7 +509,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                                                                                                                     }
                                                                                                                     for (Document document : cafeList) {
                                                                                                                         MapPOIItem marker = new MapPOIItem();
-                                                                                                                        marker.setItemName(document.getPlaceName() + "(카페)");
+                                                                                                                        marker.setItemName(document.getPlaceName());
                                                                                                                         marker.setTag(tagNum++);
                                                                                                                         double x = Double.parseDouble(document.getY());
                                                                                                                         double y = Double.parseDouble(document.getX());
@@ -677,6 +679,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     public void showMap(Uri geoLocation) {
         Intent intent;
         try {
+            FancyToast.makeText(getApplicationContext(), "카카오맵으로 길찾기를 시도합니다.", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
             intent = new Intent(Intent.ACTION_VIEW, geoLocation);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -694,10 +697,52 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
-        FancyToast.makeText(getApplicationContext(), "카카오맵으로 길찾기를 시도합니다.", FancyToast.LENGTH_SHORT, FancyToast.INFO, true).show();
-        String lat = String.valueOf(mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude);
-        String  lng = String.valueOf(mapPOIItem.getMapPoint().getMapPointGeoCoord().longitude);
-        showMap(Uri.parse("daummaps://route?sp="+mCurrentLat+ "," + mCurrentLng + "&ep=" + lat +"," +  lng+ "&by=FOOT"));
+        double lat = mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude;
+        double lng = mapPOIItem.getMapPoint().getMapPointGeoCoord().longitude;
+        Toast.makeText(this, mapPOIItem.getItemName(), Toast.LENGTH_SHORT).show();
+        CFAlertDialog.Builder builder = new CFAlertDialog.Builder(this);
+        builder.setDialogStyle(CFAlertDialog.CFAlertStyle.ALERT);
+        builder.setTitle("선택해주세요");
+        builder.setSingleChoiceItems(new String[]{"장소 정보", "길찾기"}, 2, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int index) {
+                if (index == 0) {
+                    mLoaderLayout.setVisibility(View.VISIBLE);
+                    ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+                    Call<CategoryResult> call = apiInterface.getSearchLocationDetail(getString(R.string.restapi_key), mapPOIItem.getItemName(), String.valueOf(lat), String.valueOf(lng), 1);
+                    call.enqueue(new Callback<CategoryResult>() {
+                        @Override
+                        public void onResponse(@NotNull Call<CategoryResult> call, @NotNull Response<CategoryResult> response) {
+                            mLoaderLayout.setVisibility(View.GONE);
+                            if (response.isSuccessful()) {
+                                Intent intent = new Intent(MapActivity.this, PlaceDetailActivity.class);
+                                assert response.body() != null;
+                                intent.putExtra(IntentKey.PLACE_SEARCH_DETAIL_EXTRA, response.body().getDocuments().get(0));
+                                startActivity(intent);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CategoryResult> call, Throwable t) {
+                            FancyToast.makeText(getApplicationContext(), "해당장소에 대한 상세정보는 없습니다.", FancyToast.LENGTH_SHORT, FancyToast.ERROR, true).show();
+                            mLoaderLayout.setVisibility(View.GONE);
+                            Intent intent = new Intent(MapActivity.this, PlaceDetailActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                } else if (index == 1) {
+                    showMap(Uri.parse("daummaps://route?sp=" + mCurrentLat + "," + mCurrentLng + "&ep=" + lat + "," + lng + "&by=FOOT"));
+                }
+            }
+        });
+        builder.addButton("취소", -1, -1, CFAlertDialog.CFAlertActionStyle.POSITIVE, CFAlertDialog.CFAlertActionAlignment.END, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+
     }
 
     // 마커 드래그이동시 호출

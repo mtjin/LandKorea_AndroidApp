@@ -22,7 +22,7 @@
             android:gravity="center"
             android:text="상세보기"
             android:textColor="@color/colorWhite"
-            android:textSize="25sp"
+            android:textSize="30sp"
             android:textStyle="bold"
             />
 

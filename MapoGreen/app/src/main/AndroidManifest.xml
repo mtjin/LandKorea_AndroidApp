@@ -22,7 +22,15 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".activities.SignUpActivity"></activity>
+        <activity android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.PlaceDetailActivity" />
+        <activity android:name=".activities.SignUpActivity" />
         <activity android:name=".activities.MapSearchDetailActivity" />
         <activity android:name=".activities.MapNavigationActivity" />
         <activity android:name=".activities.MapActivity">
@@ -32,13 +40,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.MainActivity" />
 
         <meta-data

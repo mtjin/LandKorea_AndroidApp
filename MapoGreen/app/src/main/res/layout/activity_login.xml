@@ -37,9 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="We can know everything within 1km"
+            app:fontFamily="cursive"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/colorWhite"
-            app:fontFamily="cursive"
             />
 
         <TextView
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="땅코리아"
+            android:text="Land Korea"
             android:textAllCaps="false"
             android:textSize="40dp"
             android:textColor="@color/colorWhite"
@@ -102,7 +102,7 @@
                 android:layout_width="130dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
-                android:text="로그인"
+                android:text="login"
                 android:textAllCaps="false"
                 />
 
@@ -130,7 +130,7 @@
         android:layout_below="@id/linearLayout2"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
-        android:text="회원가입"
+        android:text="Sign up"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/colorWhite"
@@ -141,7 +141,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="12dp"
-        android:text="비밀번호 찾기"
+        android:text="forgot password"
         android:fontFamily="@font/binggraemelona"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@color/colorWhite"
