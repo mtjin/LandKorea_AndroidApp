@@ -9,7 +9,7 @@
     <array name="icons">
         <item>@drawable/ic_location_searching_black_24dp</item>
         <item>@drawable/ic_place_black_24dp</item>
-        <item>@drawable/ic_app_logo</item>
+        <item>@drawable/ic_person_black_24dp</item>
         <item>@drawable/ic_app_logo</item>
         <item>@drawable/ic_app_logo</item>
     </array>

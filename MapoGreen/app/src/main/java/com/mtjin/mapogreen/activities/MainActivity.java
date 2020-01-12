@@ -52,11 +52,13 @@ public class MainActivity extends AppCompatActivity {
                 if(index == 0){
                     Intent intent = new Intent(MainActivity.this, MapNavigationActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.fade_in_splash, R.anim.fade_out_splash);
                     FancyToast.makeText(MainActivity.this,"네비게이션",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
                 }
                 else if (index == 1) {
                     Intent intent = new Intent(MainActivity.this, MapActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.fade_in_splash, R.anim.fade_out_splash);
                     FancyToast.makeText(MainActivity.this,"맵 검색",FancyToast.LENGTH_LONG,FancyToast.SUCCESS,true);
                 }
             }

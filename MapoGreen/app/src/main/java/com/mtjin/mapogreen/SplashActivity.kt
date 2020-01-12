@@ -1,5 +1,6 @@
 package com.mtjin.mapogreen
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -29,10 +30,12 @@ class SplashActivity : AppCompatActivity() {
         try {
             Handler().postDelayed({
                 //method
-                startActivity<LoginActivity>()
+                val intent = Intent(this, LoginActivity::class.java)
+                //startActivity<LoginActivity>()
+                startActivity(intent)
+                overridePendingTransition(R.anim.fade_in_splash, R.anim.fade_out_splash);
                 finish()
             }, 4000)
-
         }catch (e : Exception){
             e.printStackTrace()
         }

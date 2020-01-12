@@ -270,6 +270,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA7, hospitalList);
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA8, pharmacyList);
                 detailIntent.putParcelableArrayListExtra(IntentKey.CATEGOTY_SEARCH_MODEL_EXTRA9, cafeList);
+                overridePendingTransition(R.anim.fade_in_splash, R.anim.fade_out_splash);
                 startActivity(detailIntent);
                 Log.d(TAG, "fab_detail");
                 break;

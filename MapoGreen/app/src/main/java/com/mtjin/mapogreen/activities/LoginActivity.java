@@ -118,6 +118,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
                         } else { //성공했으면 다시 로그인액티비티에서 프로필액티비티로 가게해주면된다.
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            overridePendingTransition(R.anim.fade_in_splash, R.anim.fade_out_splash);
                         }
                     }
                 });
