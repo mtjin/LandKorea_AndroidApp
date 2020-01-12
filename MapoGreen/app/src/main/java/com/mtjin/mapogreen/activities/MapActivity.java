@@ -11,22 +11,18 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.crowdfire.cfalertdialog.CFAlertDialog;
-import com.google.android.gms.common.api.Api;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mtjin.mapogreen.R;
 import com.mtjin.mapogreen.adapter.LocationAdapter;
@@ -124,12 +120,12 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(locationAdapter);
 
-        //리스너 세팅
+        //맵 리스너
         mMapView.setMapViewEventListener(this); // this에 MapView.MapViewEventListener 구현.
         mMapView.setPOIItemEventListener(this);
         mMapView.setOpenAPIKeyAuthenticationResultListener(this);
 
-        //버튼클릭
+        //버튼리스너
         fab.setOnClickListener(this);
         fab1.setOnClickListener(this);
         fab2.setOnClickListener(this);
@@ -138,7 +134,8 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         stopTrackingFab.setOnClickListener(this);
 
         Toast.makeText(this, "맵을 로딩중입니다", Toast.LENGTH_SHORT).show();
-        //현재위치 업데이트
+
+        //맵 리스너 (현재위치 업데이트)
         mMapView.setCurrentLocationEventListener(this);
         //setCurrentLocationTrackingMode (지도랑 현재위치 좌표 찍어주고 따라다닌다.)
         mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
@@ -601,7 +598,6 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     }
 
     public void anim() {
-
         if (isFabOpen) {
             fab1.startAnimation(fab_close);
             fab2.startAnimation(fab_close);
@@ -632,10 +628,9 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     @Override
     public void onMapViewZoomLevelChanged(MapView mapView, int i) {
-      /*  Log.d(TAG, "X=> " + mapView.getMapCenterPoint().getMapPointGeoCoord().latitude);
-        Log.d(TAG, "Y=> " + mapView.getMapCenterPoint().getMapPointGeoCoord().longitude);*/
     }
 
+    //맵 한번 클릭시 호출
     @Override
     public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
         //검색창켜져있을때 맵클릭하면 검색창 사라지게함
@@ -677,6 +672,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
 
     }
 
+    // 길찾기 카카오맵 호출( 카카오맵앱이 없을 경우 플레이스토어 링크로 이동)
     public void showMap(Uri geoLocation) {
         Intent intent;
         try {
@@ -696,6 +692,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
     }
 
+    //말풍선(POLLITEM) 클릭시 호출
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
         double lat = mapPOIItem.getMapPoint().getMapPointGeoCoord().latitude;
@@ -778,6 +775,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         mCurrentLng = mapPointGeo.longitude;
         Log.d(TAG, "현재위치 => " + mCurrentLat + "  " + mCurrentLng);
         mLoaderLayout.setVisibility(View.GONE);
+        //트래킹 모드가 아닌 단순 현재위치 업데이트일 경우, 한번만 위치 업데이트하고 트래킹을 중단시키기 위한 로직
         if (!isTrackingMode) {
             mMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
         }
@@ -814,6 +812,7 @@ public class MapActivity extends AppCompatActivity implements MapView.MapViewEve
         searchMarker.setMapPoint(mapPoint);
         searchMarker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
         searchMarker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+        //마커 드래그 가능하게 설정
         searchMarker.setDraggable(true);
         mMapView.addPOIItem(searchMarker);
     }
