@@ -33,6 +33,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 import com.mtjin.mapogreen.R;
+import com.shashank.sony.fancytoastlib.FancyToast;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -50,6 +51,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private SignInButton googleButton;
     //사용자
     private FirebaseUser mCurrentUser;
+    //xml
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .build();
 
         findViewById(R.id.login_btn_google).setOnClickListener(this);
+        findViewById(R.id.login_btn_forgot_pw).setOnClickListener(this);
+        findViewById(R.id.login_btn_login).setOnClickListener(this);
+        findViewById(R.id.login_btn_signup).setOnClickListener(this);
     }
 
     //구글인증연결 실패시
@@ -103,8 +109,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     //구글로그인버튼 눌렀을 때 처리
     @Override
     public void onClick(View v) {
-        Intent signInintent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInintent, CODE_SIGN_IN);
+        switch (v.getId()) {
+            case R.id.login_btn_google:
+                Intent signInintent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(signInintent, CODE_SIGN_IN);
+                break;
+            case R.id.login_btn_forgot_pw:  case R.id.login_btn_login: case R.id.login_btn_signup:
+                FancyToast.makeText(LoginActivity.this,"아직 만들지 않는 서비스입니다. (추후 업데이트 예정)",FancyToast.LENGTH_LONG,FancyToast.INFO,true).show();
+        }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
@@ -178,6 +190,5 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
-
     }
 }

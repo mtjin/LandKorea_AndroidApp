@@ -99,6 +99,7 @@
             >
 
             <Button
+                android:id="@+id/login_btn_login"
                 android:layout_width="130dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
@@ -123,6 +124,7 @@
 
 
     <TextView
+        android:id="@+id/login_btn_signup"
         android:fontFamily="@font/binggraemelona"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
@@ -136,6 +138,7 @@
         android:textColor="@color/colorWhite"
         />
     <TextView
+        android:id="@+id/login_btn_forgot_pw"
         android:layout_marginTop="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

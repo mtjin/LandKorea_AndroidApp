@@ -11,7 +11,7 @@
         <item>@drawable/ic_place_black_24dp</item>
         <item>@drawable/ic_person_black_24dp</item>
         <item>@drawable/ic_app_logo</item>
-        <item>@drawable/ic_app_logo</item>
+        <item>@drawable/ic_how_to_use</item>
     </array>
     <array name="colors">
         <item>@android:color/holo_blue_light</item>
